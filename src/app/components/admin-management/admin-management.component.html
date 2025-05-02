@@ -1,0 +1,72 @@
+<div class="p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">Admin Management</h1>
+      <div class="flex items-center space-x-4">
+        <select [(ngModel)]="selectedEntityType" (change)="onEntityTypeChange()" class="border-gray-300 rounded-md shadow-sm">
+          <option *ngFor="let type of entityTypes" [value]="type">{{ type | titlecase }}</option>
+        </select>
+        <button (click)="addItem()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Add {{ selectedEntityType | titlecase }}
+        </button>
+      </div>
+    </div>
+  
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+  
+    <div *ngIf="showForm">
+      <app-entity-form
+        [entityType]="selectedEntityType"
+        [entityData]="selectedItem"
+        [relatedData]="relatedData"
+        (formSubmit)="onFormSubmit($event)"
+        (formCancel)="onFormCancel()"
+      ></app-entity-form>
+    </div>
+  
+    <div *ngIf="!showForm">
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead class="bg-gray-500 text-white">
+          <tr>
+            <th class="py-2 px-4 border-b">Name</th>
+            <th class="py-2 px-4 border-b">Related Entity</th>
+            <th class="py-2 px-4 border-b">Created At</th>
+            <th class="py-2 px-4 border-b">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items" class="hover:bg-gray-100">
+            <td class="py-2 px-4 border-b">{{ item.name }}</td>
+            <td class="py-2 px-4 border-b">
+              <ng-container [ngSwitch]="selectedEntityType">
+                <span *ngSwitchCase="'field'">{{ item.cycle?.name || 'N/A' }}</span>
+                <span *ngSwitchCase="'specialization'">{{ item.field?.name || 'N/A' }}</span>
+                <span *ngSwitchCase="'level'">{{ item.specialization?.name || 'N/A' }}</span>
+                <span *ngSwitchCase="'group'">{{ item.level?.name || 'N/A' }}</span>
+                <span *ngSwitchCase="'subject'">{{ item.level?.name || 'N/A' }}</span>
+                <span *ngSwitchDefault>-</span>
+              </ng-container>
+            </td>
+            <td class="py-2 px-4 border-b">{{ item.created_at | date:'dd/MM/yyyy' }}</td>
+            <td class="py-2 px-4 border-b">
+              <button (click)="editItem(item)" class="text-blue-500 hover:text-blue-700 mr-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+                </svg>
+              </button>
+              <button (click)="deleteItem(item.id)" class="text-red-500 hover:text-red-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="items.length === 0 && !isLoading">
+            <td colspan="4" class="py-2 px-4 text-center">No {{ selectedEntityType }}s found.</td>
+          </tr>
+          <tr *ngIf="isLoading">
+            <td colspan="4" class="py-2 px-4 text-center">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

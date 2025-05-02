@@ -1,0 +1,21 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ParentFormComponent } from './parent-form.component';
+
+describe('ParentFormComponent', () => {
+  let component: ParentFormComponent;
+  let fixture: ComponentFixture<ParentFormComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ParentFormComponent]
+    });
+    fixture = TestBed.createComponent(ParentFormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

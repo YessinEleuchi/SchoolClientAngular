@@ -1,0 +1,76 @@
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">{{ entityData ? 'Edit' : 'Add' }} {{ entityType | titlecase }}</h1>
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Name field (common to all entities) -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input id="name" formControlName="name" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="text-red-500 text-sm">
+          Name is required
+        </div>
+        <div *ngIf="fieldErrors.name" class="text-red-500 text-sm">{{ fieldErrors.name }}</div>
+      </div>
+  
+      <!-- Cycle ID for Field -->
+      <div *ngIf="entityType === 'field'">
+        <label for="cycle_id" class="block text-sm font-medium text-gray-700">Cycle</label>
+        <select id="cycle_id" formControlName="cycle_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option value="" disabled>Select cycle</option>
+          <option *ngFor="let cycle of relatedData.cycles" [value]="cycle.id">{{ cycle.name }}</option>
+        </select>
+        <div *ngIf="form.get('cycle_id')?.touched && form.get('cycle_id')?.invalid" class="text-red-500 text-sm">
+          Cycle is required
+        </div>
+        <div *ngIf="fieldErrors.cycle_id" class="text-red-500 text-sm">{{ fieldErrors.cycle_id }}</div>
+      </div>
+  
+      <!-- Field ID for Specialization -->
+      <div *ngIf="entityType === 'specialization'">
+        <label for="field_id" class="block text-sm font-medium text-gray-700">Field</label>
+        <select id="field_id" formControlName="field_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option value="" disabled>Select field</option>
+          <option *ngFor="let field of relatedData.fields" [value]="field.id">{{ field.name }}</option>
+        </select>
+        <div *ngIf="form.get('field_id')?.touched && form.get('field_id')?.invalid" class="text-red-500 text-sm">
+          Field is required
+        </div>
+        <div *ngIf="fieldErrors.field_id" class="text-red-500 text-sm">{{ fieldErrors.field_id }}</div>
+      </div>
+  
+      <!-- Specialization ID for Level -->
+      <div *ngIf="entityType === 'level'">
+        <label for="specialization_id" class="block text-sm font-medium text-gray-700">Specialization</label>
+        <select id="specialization_id" formControlName="specialization_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option value="" disabled>Select specialization</option>
+          <option *ngFor="let specialization of relatedData.specializations" [value]="specialization.id">{{ specialization.name }}</option>
+        </select>
+        <div *ngIf="form.get('specialization_id')?.touched && form.get('specialization_id')?.invalid" class="text-red-500 text-sm">
+          Specialization is required
+        </div>
+        <div *ngIf="fieldErrors.specialization_id" class="text-red-500 text-sm">{{ fieldErrors.specialization_id }}</div>
+      </div>
+  
+      <!-- Level ID for Group and Subject -->
+      <div *ngIf="entityType === 'group' || entityType === 'subject'">
+        <label for="level_id" class="block text-sm font-medium text-gray-700">Level</label>
+        <select id="level_id" formControlName="level_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option value="" disabled>Select level</option>
+          <option *ngFor="let level of relatedData.levels" [value]="level.id">{{ level.name }}</option>
+        </select>
+        <div *ngIf="form.get('level_id')?.touched && form.get('level_id')?.invalid" class="text-red-500 text-sm">
+          Level is required
+        </div>
+        <div *ngIf="fieldErrors.level_id" class="text-red-500 text-sm">{{ fieldErrors.level_id }}</div>
+      </div>
+  
+      <div class="flex space-x-4">
+        <button type="submit" [disabled]="isLoading" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          {{ isLoading ? 'Saving...' : 'Save' }}
+        </button>
+        <button type="button" (click)="onCancel()" [disabled]="isLoading" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>

@@ -3,19 +3,9 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "SchoolClient": {
+    "school": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "standalone": true
-        },
-        "@schematics/angular:directive": {
-          "standalone": true
-        },
-        "@schematics/angular:pipe": {
-          "standalone": true
-        }
-      },
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -23,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/school-client",
+            "outputPath": "dist/school",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -35,6 +25,7 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -70,10 +61,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "SchoolClient:build:production"
+              "browserTarget": "school:build:production"
             },
             "development": {
-              "browserTarget": "SchoolClient:build:development"
+              "browserTarget": "school:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -81,7 +72,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "SchoolClient:build"
+            "browserTarget": "school:build"
           }
         },
         "test": {
@@ -97,6 +88,7 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -106,6 +98,6 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": "442f9ac0-2b4b-429d-8192-e227b46daf2b"
   }
 }

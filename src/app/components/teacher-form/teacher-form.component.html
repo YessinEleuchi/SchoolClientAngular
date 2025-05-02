@@ -1,0 +1,83 @@
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">{{ isEditMode ? 'Edit Teacher' : 'Add Teacher' }}</h1>
+    <div *ngIf="successMessage" class="text-green-500 mb-4">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input id="name" formControlName="name" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="text-red-500 text-sm">
+          Name is required
+        </div>
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input id="email" formControlName="email" type="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="text-red-500 text-sm">
+          Valid email is required
+        </div>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password </label>
+        <input id="password" formControlName="password" type="password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="text-red-500 text-sm">
+          Password must be at least 6 characters
+        </div>
+      </div>
+      <div>
+        <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+        <select id="gender" formControlName="gender" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option value="" disabled>Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <div *ngIf="form.get('gender')?.touched && form.get('gender')?.invalid" class="text-red-500 text-sm">
+          Gender is required
+        </div>
+      </div>
+      <div>
+        <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+        <input id="phone" formControlName="phone" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid" class="text-red-500 text-sm">
+          Valid phone number is required
+        </div>
+      </div>
+      <div>
+        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+        <input id="address" formControlName="address" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('address')?.touched && form.get('address')?.invalid" class="text-red-500 text-sm">
+          Address is required
+        </div>
+      </div>
+      <div>
+        <label for="dateofbirth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+        <input id="dateofbirth" formControlName="dateofbirth" type="date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('dateofbirth')?.touched && form.get('dateofbirth')?.invalid" class="text-red-500 text-sm">
+          Date of birth is required
+        </div>
+      </div>
+      <div>
+        <label for="admission_no" class="block text-sm font-medium text-gray-700">Admission No</label>
+        <input id="admission_no" formControlName="admission_no" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('admission_no')?.touched && form.get('admission_no')?.invalid" class="text-red-500 text-sm">
+          Admission number is required
+        </div>
+      </div>
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+        <select id="status" formControlName="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option value="" disabled>Select status</option>
+          <option *ngFor="let status of teacherStatuses" [value]="status">{{ status }}</option>
+        </select>
+        <div *ngIf="form.get('status')?.touched && form.get('status')?.invalid" class="text-red-500 text-sm">
+          Status is required
+        </div>
+      </div>
+      <div class="flex space-x-4">
+        <button type="submit" [disabled]="isLoading" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          {{ isLoading ? 'Saving...' : 'Save' }}
+        </button>
+        <button type="button" [disabled]="isLoading" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" [routerLink]="['/admin/teachers']">Cancel</button>
+      </div>
+    </form>
+  </div>
