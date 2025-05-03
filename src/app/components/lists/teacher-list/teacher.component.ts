@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { TeacherService } from '../../../services/teacher.service';
-import { AuthService } from '../../../services/auth.service';
-import { Teacher } from '../../../models/teacher.model';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { TeacherService } from '../../../../services/teacher.service';
+import { AuthService } from '../../../../services/auth.service';
+import { Teacher } from '../../../../models/teacher.model';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-teacher',

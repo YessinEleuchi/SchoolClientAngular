@@ -1,71 +1,80 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs'; // Ensure Observable and throwError are imported
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
+import { Subject } from '../models/subject.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubjectService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private readonly apiUrl = `${environment.apiUrl}/api`;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly authService: AuthService
+  ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': 'application/json'
     });
   }
 
-  private extractErrorMessage(error: any, defaultMessage: string): string {
-    return error.error?.message || error.message || defaultMessage;
+  private handleError(error: any, defaultMessage: string): Observable<never> {
+    const message = error.error?.message || error.message || defaultMessage;
+    console.error(`${defaultMessage}:`, error);
+    return throwError(() => ({
+      message,
+      details: error.error?.details || null // Include detailed error info if available
+    }));
   }
 
-  getAllSubjects(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/subjects`, { headers: this.getHeaders() })
+  getAllSubjects(): Observable<Subject[]> {
+    return this.http
+      .get<{ data: Subject[] }>(`${this.apiUrl}/subjects`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to fetch subjects');
-          console.error('GetAllSubjects error:', error);
-          return throwError(() => new Error(message));
-        })
+        map(response => response.data),
+        catchError(error => this.handleError(error, 'Failed to fetch subjects'))
       );
   }
 
-  addSubject(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/subjects`, data, { headers: this.getHeaders() })
+  getSubjectById(id: number): Observable<Subject> {
+    return this.http
+      .get<{ data: Subject }>(`${this.apiUrl}/subjects/${id}`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to add subject');
-          console.error('AddSubject error:', error);
-          return throwError(() => ({ message, error: error.error }));
-        })
+        map(response => response.data),
+        catchError(error => this.handleError(error, `Failed to fetch subject (ID: ${id})`))
       );
   }
 
-  updateSubject(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/subjects/${id}`, data, { headers: this.getHeaders() })
+  addSubject(data: Partial<Subject>): Observable<void> {
+    console.log('Add subject request data:', data);
+    return this.http
+      .post<void>(`${this.apiUrl}/subjects`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to update subject');
-          console.error(`UpdateSubject error (ID: ${id}):`, error);
-          return throwError(() => ({ message, error: error.error }));
-        })
+        catchError(error => this.handleError(error, 'Failed to add subject'))
       );
   }
 
-  deleteSubject(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/subjects/${id}`, { headers: this.getHeaders() })
+  updateSubject(id: number, data: Partial<Subject>): Observable<void> {
+    console.log('Update subject request data:', data);
+    return this.http
+      .put<void>(`${this.apiUrl}/subjects/${id}`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to delete subject');
-          console.error(`DeleteSubject error (ID: ${id}):`, error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, `Failed to update subject (ID: ${id})`))
+      );
+  }
+
+  deleteSubject(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/subjects/${id}`, { headers: this.getHeaders() })
+      .pipe(
+        catchError(error => this.handleError(error, `Failed to delete subject (ID: ${id})`))
       );
   }
 }

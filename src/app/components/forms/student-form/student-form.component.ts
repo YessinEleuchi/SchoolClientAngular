@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StudentService } from '../../../services/student.service';
-import { AuthService } from '../../../services/auth.service';
-import { GroupService } from '../../../services/group.service';
-import { ParentService } from '../../../services/parent.service';
+import { StudentService } from '../../../../services/student.service';
+import { AuthService } from '../../../../services/auth.service';
+import { GroupService } from '../../../../services/group.service';
+import { ParentService } from '../../../../services/parent.service';
 
 @Component({
   selector: 'app-student-form',
@@ -47,7 +47,7 @@ export class StudentFormComponent implements OnInit {
       gender: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required, Validators.maxLength(20)]),
       address: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-      dateofbirth: new FormControl('', [Validators.required]),
+      date_of_birth: new FormControl('', [Validators.required]),
       admission_no: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       status: new FormControl('', [Validators.required]),
       group_id: new FormControl('', [Validators.required]),
@@ -82,7 +82,7 @@ export class StudentFormComponent implements OnInit {
           gender: student.user.gender || '',
           phone: student.user.phone || '',
           address: student.user.address || '',
-          dateofbirth: student.user.dateofbirth || '',
+          date_of_birth: student.user.date_of_birth || '',
           admission_no: student.admission_no || '',
           status: student.status || '',
           group_id: student.group_id || '',
@@ -131,7 +131,6 @@ export class StudentFormComponent implements OnInit {
       this.studentService.updateStudent(+id, studentData).subscribe({
         next: (response) => {
           console.log('Update response:', response);
-          this.successMessage = response.message || 'Student updated successfully';
           this.errorMessage = '';
           this.fieldErrors = {};
           this.isLoading = false;
@@ -150,7 +149,6 @@ export class StudentFormComponent implements OnInit {
       this.studentService.addStudent(studentData).subscribe({
         next: (response) => {
           console.log('Add response:', response);
-          this.successMessage = response.message || 'Student added successfully';
           this.errorMessage = '';
           this.fieldErrors = {};
           this.isLoading = false;

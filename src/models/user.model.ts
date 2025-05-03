@@ -10,5 +10,4 @@ export interface User {
   date_of_birth?: string;
   phone?: string;
   address?: string;
-
 }

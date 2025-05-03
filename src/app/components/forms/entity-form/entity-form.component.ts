@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CycleService } from '../../../services/cycle.service';
-import { FieldService } from '../../../services/field.service';
-import { SpecializationService } from '../../../services/specialization.service';
-import { LevelService } from '../../../services/level.service';
-import { GroupService } from '../../../services/group.service';
-import { SubjectService } from '../../../services/subject.service';
+import { CycleService } from '../../../../services/cycle.service';
+import { FieldService } from '../../../../services/field.service';
+import { SpecializationService } from '../../../../services/specialization.service';
+import { LevelService } from '../../../../services/level.service';
+import { GroupService } from '../../../../services/group.service';
+import { SubjectService } from '../../../../services/subject.service';
 import { Observable } from 'rxjs'
 @Component({
   selector: 'app-entity-form',

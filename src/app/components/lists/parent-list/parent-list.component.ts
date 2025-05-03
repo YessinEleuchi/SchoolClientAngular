@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { StudentService } from '../../../services/student.service';
-import { AuthService } from '../../../services/auth.service';
+import { ParentService } from '../../../../services/parent.service';
+import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 
 @Component({
-  selector: 'app-student-list',
-  templateUrl: './student-list.component.html'
+  selector: 'app-parent-list',
+  templateUrl: './parent-list.component.html'
 })
-export class StudentListComponent implements OnInit {
-  students: any[] = [];
+export class ParentListComponent implements OnInit {
+  parents: any[] = [];
   isLoading: boolean = false;
   errorMessage: string = '';
 
   constructor(
-    private studentService: StudentService,
+    private parentService: ParentService,
     private authService: AuthService,
     private router: Router,
     private dialog: MatDialog
@@ -27,14 +27,14 @@ export class StudentListComponent implements OnInit {
       this.authService.logout();
       return;
     }
-    this.loadStudents();
+    this.loadParents();
   }
 
-  loadStudents(): void {
+  loadParents(): void {
     this.isLoading = true;
-    this.studentService.getAllStudents().subscribe({
-      next: (students) => {
-        this.students = students;
+    this.parentService.getAllParents().subscribe({
+      next: (parents) => {
+        this.parents = parents;
         this.isLoading = false;
         this.errorMessage = '';
       },
@@ -45,25 +45,25 @@ export class StudentListComponent implements OnInit {
     });
   }
 
-  addStudent(): void {
-    this.router.navigate(['/admin/students/add']);
+  addParent(): void {
+    this.router.navigate(['/admin/parents/add']);
   }
 
-  editStudent(id: number): void {
-    this.router.navigate([`/admin/students/edit/${id}`]);
+  editParent(id: number): void {
+    this.router.navigate([`/admin/parents/edit/${id}`]);
   }
 
-  deleteStudent(id: number): void {
+  deleteParent(id: number): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: { message: 'Are you sure you want to delete this student?' }
+      data: { message: 'Are you sure you want to delete this parent?' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.studentService.deleteStudent(id).subscribe({
+        this.parentService.deleteParent(id).subscribe({
           next: () => {
-            this.students = this.students.filter(student => student.id !== id);
+            this.parents = this.parents.filter(parent => parent.id !== id);
             this.errorMessage = '';
           },
           error: (err) => {

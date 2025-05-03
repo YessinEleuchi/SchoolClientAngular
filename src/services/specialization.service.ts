@@ -1,71 +1,80 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs'; // Ensure Observable and throwError are imported
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
+import { Specialization } from '../models/specialization.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpecializationService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private readonly apiUrl = `${environment.apiUrl}/api`;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly authService: AuthService
+  ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': 'application/json'
     });
   }
 
-  private extractErrorMessage(error: any, defaultMessage: string): string {
-    return error.error?.message || error.message || defaultMessage;
+  private handleError(error: any, defaultMessage: string): Observable<never> {
+    const message = error.error?.message || error.message || defaultMessage;
+    console.error(`${defaultMessage}:`, error);
+    return throwError(() => ({
+      message,
+      details: error.error?.details || null // Include detailed error info if available
+    }));
   }
 
-  getAllSpecializations(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/specializations`, { headers: this.getHeaders() })
+  getAllSpecializations(): Observable<Specialization[]> {
+    return this.http
+      .get<{ data: Specialization[] }>(`${this.apiUrl}/specializations`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to fetch specializations');
-          console.error('GetAllSpecializations error:', error);
-          return throwError(() => new Error(message));
-        })
+        map(response => response.data),
+        catchError(error => this.handleError(error, 'Failed to fetch specializations'))
       );
   }
 
-  addSpecialization(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/specializations`, data, { headers: this.getHeaders() })
+  getSpecializationById(id: number): Observable<Specialization> {
+    return this.http
+      .get<{ data: Specialization }>(`${this.apiUrl}/specializations/${id}`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to add specialization');
-          console.error('AddSpecialization error:', error);
-          return throwError(() => ({ message, error: error.error }));
-        })
+        map(response => response.data),
+        catchError(error => this.handleError(error, `Failed to fetch specialization (ID: ${id})`))
       );
   }
 
-  updateSpecialization(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/specializations/${id}`, data, { headers: this.getHeaders() })
+  addSpecialization(data: Partial<Specialization>): Observable<void> {
+    console.log('Add specialization request data:', data);
+    return this.http
+      .post<void>(`${this.apiUrl}/specializations`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to update specialization');
-          console.error(`UpdateSpecialization error (ID: ${id}):`, error);
-          return throwError(() => ({ message, error: error.error }));
-        })
+        catchError(error => this.handleError(error, 'Failed to add specialization'))
       );
   }
 
-  deleteSpecialization(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/specializations/${id}`, { headers: this.getHeaders() })
+  updateSpecialization(id: number, data: Partial<Specialization>): Observable<void> {
+    console.log('Update specialization request data:', data);
+    return this.http
+      .put<void>(`${this.apiUrl}/specializations/${id}`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to delete specialization');
-          console.error(`DeleteSpecialization error (ID: ${id}):`, error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, `Failed to update specialization (ID: ${id})`))
+      );
+  }
+
+  deleteSpecialization(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/specializations/${id}`, { headers: this.getHeaders() })
+      .pipe(
+        catchError(error => this.handleError(error, `Failed to delete specialization (ID: ${id})`))
       );
   }
 }

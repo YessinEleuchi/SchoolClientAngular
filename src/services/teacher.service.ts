@@ -4,83 +4,77 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
+import { Teacher } from '../models/teacher.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeacherService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private readonly apiUrl = `${environment.apiUrl}/api`;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly authService: AuthService
+  ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': 'application/json'
     });
   }
 
-  private extractErrorMessage(error: any, defaultMessage: string): string {
-    return error.error?.message || error.message || defaultMessage;
+  private handleError(error: any, defaultMessage: string): Observable<never> {
+    const message = error.error?.message || error.message || defaultMessage;
+    console.error(`${defaultMessage}:`, error);
+    return throwError(() => ({
+      message,
+      details: error.error?.details || null // Include detailed error info if available
+    }));
   }
 
-  getAllTeachers(): Observable<any[]> {
-    return this.http.get<{ data: any[] }>(`${this.apiUrl}/teachers`, { headers: this.getHeaders() })
+  getAllTeachers(): Observable<Teacher[]> {
+    return this.http
+      .get<{ data: Teacher[] }>(`${this.apiUrl}/teachers`, { headers: this.getHeaders() })
       .pipe(
         map(response => response.data),
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to fetch teachers');
-          console.error('GetAllTeachers error:', error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, 'Failed to fetch teachers'))
       );
   }
 
-  getTeacherById(id: number): Observable<any> {
-    return this.http.get<{ data: any }>(`${this.apiUrl}/teachers/${id}`, { headers: this.getHeaders() })
+  getTeacherById(id: number): Observable<Teacher> {
+    return this.http
+      .get<{ data: Teacher }>(`${this.apiUrl}/teachers/${id}`, { headers: this.getHeaders() })
       .pipe(
         map(response => response.data),
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to fetch teacher');
-          console.error(`GetTeacherById error (ID: ${id}):`, error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, `Failed to fetch teacher (ID: ${id})`))
       );
   }
 
-  addTeacher(data: any): Observable<any> {
+  addTeacher(data: Partial<Teacher>): Observable<void> {
     console.log('Add teacher request data:', data);
-    return this.http.post(`${this.apiUrl}/add-teacher`, data, { headers: this.getHeaders() })
+    return this.http
+      .post<void>(`${this.apiUrl}/add-teacher`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to add teacher');
-          console.error('AddTeacher error:', error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, 'Failed to add teacher'))
       );
   }
 
-  updateTeacher(id: number, data: any): Observable<any> {
-    console.log('Update request data:', data);
-    return this.http.put(`${this.apiUrl}/teachers/${id}`, data, { headers: this.getHeaders() })
+  updateTeacher(id: number, data: Partial<Teacher>): Observable<void> {
+    console.log('Update teacher request data:', data);
+    return this.http
+      .put<void>(`${this.apiUrl}/teachers/${id}`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to update teacher');
-          console.error(`UpdateTeacher error (ID: ${id}):`, error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, `Failed to update teacher (ID: ${id})`))
       );
   }
 
-  deleteTeacher(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/teachers/${id}`, { headers: this.getHeaders() })
+  deleteTeacher(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/teachers/${id}`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to delete teacher');
-          console.error(`DeleteTeacher error (ID: ${id}):`, error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, `Failed to delete teacher (ID: ${id})`))
       );
   }
 }

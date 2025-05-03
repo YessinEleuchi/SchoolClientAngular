@@ -56,12 +56,12 @@
         <div *ngIf="fieldErrors.address" class="text-red-500 text-sm">{{ fieldErrors.address }}</div>
       </div>
       <div>
-        <label for="dateofbirth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-        <input id="dateofbirth" formControlName="dateofbirth" type="date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('dateofbirth')?.touched && form.get('dateofbirth')?.invalid" class="text-red-500 text-sm">
+        <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+        <input id="date_of_birth" formControlName="date_of_birth" type="date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div *ngIf="form.get('date_of_birth')?.touched && form.get('date_of_birth')?.invalid" class="text-red-500 text-sm">
           Date of birth is required
         </div>
-        <div *ngIf="fieldErrors.dateofbirth" class="text-red-500 text-sm">{{ fieldErrors.dateofbirth }}</div>
+        <div *ngIf="fieldErrors.date_of_birth" class="text-red-500 text-sm">{{ fieldErrors.date_of_birth }}</div>
       </div>
       <div>
         <label for="admission_no" class="block text-sm font-medium text-gray-700">Admission No</label>

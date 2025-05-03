@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
-import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
-import { TeacherDashboardComponent } from './components/teacher-dashboard/teacher-dashboard.component';
-import { StudentDashboardComponent } from './components/student-dashboard/student-dashboard.component';
-import { ParentDashboardComponent } from './components/parent-dashboard/parent-dashboard.component';
-import { TeacherComponent } from './components/teacher/teacher.component';
-import { TeacherFormComponent } from './components/teacher-form/teacher-form.component';
-import { ParentListComponent } from './components/parent-list/parent-list.component';
-import { ParentFormComponent } from './components/parent-form/parent-form.component';
+import { AdminDashboardComponent } from '../Dashboards/admin-dashboard/admin-dashboard.component';
+import { TeacherDashboardComponent } from '../Dashboards/teacher-dashboard/teacher-dashboard.component';
+import { StudentDashboardComponent } from '../Dashboards/student-dashboard/student-dashboard.component';
+import { ParentDashboardComponent } from '../Dashboards/parent-dashboard/parent-dashboard.component';
+import { TeacherComponent } from './components/lists/teacher-list/teacher.component';
+import { TeacherFormComponent } from './components/forms/teacher-form/teacher-form.component';
+import { ParentListComponent } from './components/lists/parent-list/parent-list.component';
+import { ParentFormComponent } from './components/forms/parent-form/parent-form.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminManagementComponent } from './components/admin-management/admin-management.component';
-import { StudentListComponent } from './components/student-list/student-list.component';
-import { StudentFormComponent } from './components/student-form/student-form.component';
+import { StudentListComponent } from './components/lists/student-list/student-list.component';
+import { StudentFormComponent } from './components/forms/student-form/student-form.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },

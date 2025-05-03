@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TeacherService } from '../../../services/teacher.service';
-import { AuthService } from '../../../services/auth.service';
+import { TeacherService } from '../../../../services/teacher.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-teacher-form',
