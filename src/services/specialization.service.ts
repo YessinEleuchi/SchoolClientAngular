@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, tap, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { Specialization } from '../models/specialization.model';
+import {Group} from "../models/group.model";
 
 @Injectable({
   providedIn: 'root'
@@ -36,10 +37,10 @@ export class SpecializationService {
 
   getAllSpecializations(): Observable<Specialization[]> {
     return this.http
-      .get<{ data: Specialization[] }>(`${this.apiUrl}/specializations`, { headers: this.getHeaders() })
+      .get<Specialization[]>(`${this.apiUrl}/specializations`, { headers: this.getHeaders() })
       .pipe(
-        map(response => response.data),
-        catchError(error => this.handleError(error, 'Failed to fetch specializations'))
+        tap(Specializations => console.log('Specialization API Response:', Specializations)), // Log the response
+        catchError(error => this.handleError(error, 'Failed to fetch Specialization'))
       );
   }
 

@@ -1,71 +1,79 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs'; // Ensure Observable and throwError are imported
-import { catchError } from 'rxjs/operators';
+import {Observable, tap, throwError} from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
+import { Cycle } from '../models/cycle.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CycleService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private readonly apiUrl = `${environment.apiUrl}/api`;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly authService: AuthService
+  ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': 'application/json'
     });
   }
 
-  private extractErrorMessage(error: any, defaultMessage: string): string {
-    return error.error?.message || error.message || defaultMessage;
+  private handleError(error: any, defaultMessage: string): Observable<never> {
+    const message = error.error?.message || error.message || defaultMessage;
+    console.error(`${defaultMessage}:`, error);
+    return throwError(() => ({
+      message,
+      details: error.error?.details || null // Include detailed error info if available
+    }));
   }
 
-  getAllCycles(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/cycles`, { headers: this.getHeaders() })
+  getAllCycles(): Observable<Cycle[]> {
+    return this.http
+      .get<Cycle[]>(`${this.apiUrl}/cycles`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to fetch cycles');
-          console.error('GetAllCycles error:', error);
-          return throwError(() => new Error(message));
-        })
+        tap(cycles => console.log('Cycles API Response:', cycles)), // Log the response
+        catchError(error => this.handleError(error, 'Failed to fetch cycles'))
+      );
+  }
+  getCycleById(id: number): Observable<Cycle> {
+    return this.http
+      .get<{ data: Cycle }>(`${this.apiUrl}/cycles/${id}`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.data),
+        catchError(error => this.handleError(error, `Failed to fetch cycle (ID: ${id})`))
       );
   }
 
-  addCycle(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/cycles`, data, { headers: this.getHeaders() })
+  addCycle(data: Partial<Cycle>): Observable<void> {
+    console.log('Add cycle request data:', data);
+    return this.http
+      .post<void>(`${this.apiUrl}/cycles`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to add cycle');
-          console.error('AddCycle error:', error);
-          return throwError(() => ({ message, error: error.error }));
-        })
+        catchError(error => this.handleError(error, 'Failed to add cycle'))
       );
   }
 
-  updateCycle(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/cycles/${id}`, data, { headers: this.getHeaders() })
+  updateCycle(id: number, data: Partial<Cycle>): Observable<void> {
+    console.log('Update cycle request data:', data);
+    return this.http
+      .put<void>(`${this.apiUrl}/cycles/${id}`, data, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to update cycle');
-          console.error(`UpdateCycle error (ID: ${id}):`, error);
-          return throwError(() => ({ message, error: error.error }));
-        })
+        catchError(error => this.handleError(error, `Failed to update cycle (ID: ${id})`))
       );
   }
 
-  deleteCycle(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/cycles/${id}`, { headers: this.getHeaders() })
+  deleteCycle(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/cycles/${id}`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
-          const message = this.extractErrorMessage(error, 'Failed to delete cycle');
-          console.error(`DeleteCycle error (ID: ${id}):`, error);
-          return throwError(() => new Error(message));
-        })
+        catchError(error => this.handleError(error, `Failed to delete cycle (ID: ${id})`))
       );
   }
 }

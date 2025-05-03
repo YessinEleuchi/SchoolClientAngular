@@ -14,6 +14,8 @@ export class TeacherComponent implements OnInit {
   dataSource: Teacher[] = [];
   displayedColumns: string[] = ['id', 'name', 'email', 'admission_no', 'status', 'action'];
   errorMessage: string = '';
+  isLoading: boolean = false;
+
 
   constructor(
     private teacherService: TeacherService,
@@ -33,13 +35,16 @@ export class TeacherComponent implements OnInit {
   }
 
   loadTeachers(): void {
+    this.isLoading = true;
     this.teacherService.getAllTeachers().subscribe({
       next: (teachers) => {
         this.dataSource = teachers;
+        this.isLoading = false;
         this.errorMessage = '';
       },
       error: (err) => {
         this.errorMessage = err.message;
+        this.isLoading = false;
       }
     });
   }

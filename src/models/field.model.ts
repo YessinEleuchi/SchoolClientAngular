@@ -2,10 +2,10 @@ import { Cycle } from './cycle.model';
 import { Specialization } from './specialization.model';
 
 export interface Field {
-  id?: number;
+  id: number;
   name: string;
   cycle_id: number;
-
   cycle?: Cycle;
-  specializations?: Specialization[];
+  created_at: string;
+  updated_at: string;
 }

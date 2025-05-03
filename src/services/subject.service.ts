@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, tap, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { Subject } from '../models/subject.model';
+import {Specialization} from "../models/specialization.model";
 
 @Injectable({
   providedIn: 'root'
@@ -36,10 +37,10 @@ export class SubjectService {
 
   getAllSubjects(): Observable<Subject[]> {
     return this.http
-      .get<{ data: Subject[] }>(`${this.apiUrl}/subjects`, { headers: this.getHeaders() })
+      .get<Subject[]>(`${this.apiUrl}/subjects`, { headers: this.getHeaders() })
       .pipe(
-        map(response => response.data),
-        catchError(error => this.handleError(error, 'Failed to fetch subjects'))
+        tap(Subjects => console.log('Subject API Response:', Subjects)), // Log the response
+        catchError(error => this.handleError(error, 'Failed to fetch Subject'))
       );
   }
 

@@ -3,11 +3,10 @@ import { Group } from './group.model';
 import { Subject } from './subject.model';
 
 export interface Level {
-  id?: number;
+  id: number;
   name: string;
   specialization_id: number;
-
   specialization?: Specialization;
-  groups?: Group[];
-  subjects?: Subject[];
+  created_at: string;
+  updated_at: string;
 }
