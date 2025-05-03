@@ -107,7 +107,6 @@ export class TeacherFormComponent implements OnInit {
       this.teacherService.updateTeacher(+id, teacherData).subscribe({
         next: (response) => {
           console.log('Update response:', response);
-          this.successMessage = response.message || 'Teacher updated successfully';
           this.errorMessage = '';
           this.isLoading = false;
           this.router.navigate(['/admin/teachers']);
@@ -122,7 +121,6 @@ export class TeacherFormComponent implements OnInit {
       this.teacherService.addTeacher(teacherData).subscribe({
         next: (response) => {
           console.log('Add response:', response);
-          this.successMessage = response.message || 'Teacher added successfully';
           this.errorMessage = '';
           this.isLoading = false;
           this.router.navigate(['/admin/teachers']);
