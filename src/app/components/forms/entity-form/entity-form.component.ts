@@ -6,7 +6,8 @@ import { SpecializationService } from '../../../../services/specialization.servi
 import { LevelService } from '../../../../services/level.service';
 import { GroupService } from '../../../../services/group.service';
 import { SubjectService } from '../../../../services/subject.service';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
+
 @Component({
   selector: 'app-entity-form',
   templateUrl: './entity-form.component.html'
@@ -44,6 +45,7 @@ export class EntityFormComponent implements OnInit {
       case 'cycle':
         this.form = new FormGroup({
           name: new FormControl('', [Validators.required, Validators.maxLength(255)])
+          // No level_id, as cycles are top-level entities
         });
         break;
       case 'field':

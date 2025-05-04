@@ -24,6 +24,7 @@
 
     <div *ngIf="showForm">
       <app-entity-form
+        *ngIf="showForm"
         [entityType]="selectedEntityType"
         [entityData]="selectedItem"
         [relatedData]="relatedData"
@@ -51,7 +52,7 @@
               <span *ngSwitchCase="'specialization'">{{ item.field?.name || 'N/A' }}</span>
               <span *ngSwitchCase="'level'">{{ item.specialization?.name || 'N/A' }}</span>
               <span *ngSwitchCase="'group'">{{ item.level?.name || 'N/A' }}</span>
-              <span *ngSwitchCase="'subject'">{{ item.level?.name || 'N/A' }}</span>
+              <span *ngSwitchCase="'subject'">{{ item.level?.name }}</span>
               <span *ngSwitchDefault>-</span>
             </ng-container>
           </td>

@@ -7,7 +7,7 @@ import { GroupService } from '../../../services/group.service';
 import { SubjectService } from '../../../services/subject.service';
 import { AuthService } from '../../../services/auth.service';
 import { Observable } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Cycle } from '../../../models/cycle.model';
@@ -74,6 +74,7 @@ export class AdminManagementComponent implements OnInit {
   }
 
   loadRelatedData(): void {
+    // Load all related data for form dropdowns
     this.cycleService.getAllCycles().subscribe({
       next: cycles => {
         this.relatedData.cycles = cycles;
@@ -81,7 +82,41 @@ export class AdminManagementComponent implements OnInit {
       },
       error: err => console.error('Error loading related cycles:', err)
     });
-    // ... (other service calls)
+    this.fieldService.getAllFields().subscribe({
+      next: fields  => {
+        this.relatedData.fields = fields;
+        console.log('Related fields:', fields);
+      },
+      error: err => console.error('Error loading related fields:', err)
+    });
+    this.specializationService.getAllSpecializations().subscribe({
+      next: specializations => {
+        this.relatedData.specializations = specializations;
+        console.log('Related specializations:', specializations);
+      },
+      error: err => console.error('Error loading related specializations:', err)
+    });
+    this.levelService.getAllLevels().subscribe({
+      next: levels => {
+        this.relatedData.levels = levels;
+        console.log('Related levels:', levels);
+      },
+      error: err => console.error('Error loading related levels:', err)
+    });
+    this.groupService.getAllGroups().subscribe({
+      next: groups => {
+        this.relatedData.groups = groups;
+        console.log('Related groups:', groups);
+      },
+      error: err => console.error('Error loading related groups:', err)
+    });
+    this.subjectService.getAllSubjects().subscribe({
+      next: subjects => {
+        this.relatedData.subjects = subjects;
+        console.log('Related subjects:', subjects);
+      },
+      error: err => console.error('Error loading related subjects:', err)
+    });
   }
 
   loadItems(): void {
@@ -173,10 +208,12 @@ export class AdminManagementComponent implements OnInit {
     this.showForm = false;
     this.selectedItem = null;
     this.loadItems();
+    this.cdr.detectChanges(); // Ensure UI updates
   }
 
   onFormCancel(): void {
     this.showForm = false;
     this.selectedItem = null;
+    this.cdr.detectChanges(); // Ensure UI updates
   }
 }
