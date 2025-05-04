@@ -1,63 +1,80 @@
-<div class="container">
-  <h2>Student Management</h2>
+<div class="p-6 max-w-7xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors duration-300">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Student Management</h1>
+      <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+              (click)="addStudent()">
+        <svg class="w-5 h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Student
+      </button>
+    </div>
 
-  <!-- Error Message -->
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
-  </div>
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
+      {{ errorMessage }}
+    </div>
 
-  <!-- Loading Spinner -->
-  <div *ngIf="isLoading" class="text-center">
-    <mat-spinner></mat-spinner>
-  </div>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-gray-600 dark:text-gray-400 text-center py-8">
+      <svg class="animate-spin h-8 w-8 mx-auto text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="block mt-2">Loading...</span>
+    </div>
 
-  <!-- Add Student Button -->
-  <button mat-raised-button color="primary" (click)="addStudent()">Add Student</button>
+    <!-- Table -->
+    <div class="overflow-x-auto" *ngIf="!isLoading && students.length">
+      <table class="w-full border-collapse">
+        <thead class="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200">
+        <tr>
+          <th class="p-4 text-left font-semibold">Name</th>
+          <th class="p-4 text-left font-semibold">Email</th>
+          <th class="p-4 text-left font-semibold">Admission No</th>
+          <th class="p-4 text-left font-semibold">Status</th>
+          <th class="p-4 text-left font-semibold">Group</th>
+          <th class="p-4 text-left font-semibold">Parent</th>
+          <th class="p-4 text-left font-semibold">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let student of students"
+            class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
+          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.user.name }}</td>
+          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.user.email }}</td>
+          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.admission_no }}</td>
+          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.status }}</td>
+          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.group?.name || 'N/A' }}</td>
+          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.parent?.user?.name || 'N/A' }}</td>
+          <td class="p-4">
+            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-4 rounded-lg mr-2 transition-colors duration-200"
+                    (click)="editStudent(student.id)">
+              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+              </svg>
+              Edit
+            </button>
+            <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-4 rounded-lg transition-colors duration-200"
+                    (click)="deleteStudent(student.id)">
+              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Delete
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Student Table -->
-  <table mat-table [dataSource]="students" class="mat-elevation-z8" *ngIf="!isLoading && students.length">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let student">{{ student.user.name }}</td>
-    </ng-container>
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let student">{{ student.user.email }}</td>
-    </ng-container>
-    <ng-container matColumnDef="admission_no">
-      <th mat-header-cell *matHeaderCellDef>Admission No</th>
-      <td mat-cell *matCellDef="let student">{{ student.admission_no }}</td>
-    </ng-container>
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let student">{{ student.status }}</td>
-    </ng-container>
-    <ng-container matColumnDef="group">
-      <th mat-header-cell *matHeaderCellDef>Group</th>
-      <td mat-cell *matCellDef="let student">{{ student.group?.name || 'N/A' }}</td>
-    </ng-container>
-    <ng-container matColumnDef="parent">
-      <th mat-header-cell *matHeaderCellDef>Parent</th>
-      <td mat-cell *matCellDef="let student">{{ student.parent?.user?.name || 'N/A' }}</td>
-    </ng-container>
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let student">
-        <button mat-icon-button color="primary" (click)="editStudent(student.id)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="deleteStudent(student.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="['name', 'email', 'admission_no', 'status', 'group', 'parent', 'actions']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'admission_no', 'status', 'group', 'parent', 'actions']"></tr>
-  </table>
-
-  <!-- No Students Message -->
-  <div *ngIf="!isLoading && !students.length" class="alert alert-info">
-    No students found.
+    <!-- No Students Found -->
+    <div *ngIf="!isLoading && !students.length" class="text-gray-500 dark:text-gray-400 text-center py-8">
+      <svg class="w-12 h-12 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m6 2v-2m-6-6h6M5 12h14M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+      No students found.
+    </div>
   </div>
 </div>

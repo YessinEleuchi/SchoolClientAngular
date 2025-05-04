@@ -47,10 +47,16 @@
           <td class="p-4">
             <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-4 rounded-lg mr-2 transition-colors duration-200"
                     (click)="editParent(parent.id)">
+              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+              </svg>
               Edit
             </button>
             <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-4 rounded-lg transition-colors duration-200"
                     (click)="deleteParent(parent.id)">
+              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
               Delete
             </button>
           </td>
