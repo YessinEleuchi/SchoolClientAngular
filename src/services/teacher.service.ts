@@ -51,6 +51,14 @@ export class TeacherService {
         catchError(error => this.handleError(error, `Failed to fetch teacher (ID: ${id})`))
       );
   }
+  getTotalTeachers(): Observable<number> {
+    return this.http
+      .get<{ total: number }>(`${this.apiUrl}/teachers/total`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.total),
+        catchError(error => this.handleError(error, 'Failed to fetch total teachers'))
+      );
+  }
 
   addTeacher(data: Partial<Teacher>): Observable<void> {
     console.log('Add teacher request data:', data);

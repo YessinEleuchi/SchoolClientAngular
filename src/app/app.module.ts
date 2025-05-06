@@ -31,6 +31,8 @@ import { EntityFormComponent } from './components/forms/entity-form/entity-form.
 import { StudentFormComponent } from './components/forms/student-form/student-form.component';
 import { StudentListComponent } from './components/lists/student-list/student-list.component';
 import { StudentService } from '../services/student.service';
+import { NgChartsModule } from 'ng2-charts';
+import { OverviewComponent } from './overview/overview.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,8 @@ import { StudentService } from '../services/student.service';
     AdminManagementComponent,
     EntityFormComponent,
     StudentFormComponent,
-    StudentListComponent
+    StudentListComponent,
+    OverviewComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +69,10 @@ import { StudentService } from '../services/student.service';
     MatInputModule, // Added for mat-input
     MatSelectModule, // Added for mat-select
     MatDatepickerModule, // Added for date picker
-    MatNativeDateModule // Added for date picker
+    MatNativeDateModule, // Added for date picker
+    NgChartsModule,
+    FormsModule,
+
   ],
   providers: [AuthGuard, StudentService],
   bootstrap: [AppComponent]

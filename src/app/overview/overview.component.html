@@ -1,0 +1,65 @@
+<div class="container mx-auto p-4 sm:p-6 bg-gray-100 rounded-xl min-h-screen">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+    <h1 class="text-2xl sm:text-3xl font-medium text-gray-800 mb-4 sm:mb-0">Student Dashboard</h1>
+  </div>
+  <!-- Student Count Card -->
+  <div class="bg-white rounded-xl p-4 sm:p-6 flex items-center shadow-sm mb-6 w-full max-w-md">
+    <div class="bg-green-500 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mr-4 text-xl sm:text-2xl">
+      <i class="fas fa-users"></i>
+    </div>
+    <div>
+      <p class="text-gray-500 text-sm sm:text-base">Total Students</p>
+      <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800">{{ totalStudents }}</h2>
+    </div>
+  </div>
+
+  <!-- Stats Container -->
+  <div class="mb-6">
+    <h2 class="text-xl sm:text-2xl font-medium text-gray-800 mb-4">Cycle Statistics</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <!-- Stat Card: Ingénierie -->
+      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-blue-500">
+        <p class="font-medium text-gray-600 mb-2">Ingénierie</p>
+        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.ingenierie }}</p>
+        <p class="text-sm text-gray-500">{{ getPercentage(studentData.ingenierie) }}</p>
+      </div>
+      <!-- Stat Card: License -->
+      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-red-500">
+        <p class="font-medium text-gray-600 mb-2">License</p>
+        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.license }}</p>
+        <p class="text-sm text-gray-500">{{ getPercentage(studentData.license) }}</p>
+      </div>
+      <!-- Stat Card: Préparatoire -->
+      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-teal-500">
+        <p class="font-medium text-gray-600 mb-2">Préparatoire</p>
+        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.preparatoire }}</p>
+        <p class="text-sm text-gray-500">{{ getPercentage(studentData.preparatoire) }}</p>
+      </div>
+      <!-- Stat Card: Architecture -->
+      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-yellow-500">
+        <p class="font-medium text-gray-600 mb-2">Architecture</p>
+        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.architecture }}</p>
+        <p class="text-sm text-gray-500">{{ getPercentage(studentData.architecture) }}</p>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Charts Container -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
+    <!-- Pie Chart -->
+    <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm flex justify-center items-center">
+      <div class="w-full max-w-[400px] h-[300px] sm:h-[350px]">
+        <canvas id="studentPieChart"></canvas>
+      </div>
+    </div>
+    <!-- Bar Chart -->
+    <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
+      <div class="w-full h-[250px] sm:h-[300px]">
+        <canvas id="studentBarChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, tap, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { Student } from '../models/student.model';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -30,9 +32,11 @@ export class StudentService {
     console.error(`${defaultMessage}:`, error);
     return throwError(() => ({
       message,
-      details: error.error?.details || null // Include detailed error info if available
+      details: error.error?.details || null
     }));
   }
+
+
 
   getAllStudents(): Observable<Student[]> {
     return this.http
@@ -40,6 +44,44 @@ export class StudentService {
       .pipe(
         map(response => response.students),
         catchError(error => this.handleError(error, 'Failed to fetch students'))
+      );
+  }
+  getTotalStudents(): Observable<number> {
+    return this.http
+      .get<{ success: boolean; total_students: number }>(`${this.apiUrl}/students/total`, { headers: this.getHeaders() })
+      .pipe(
+        tap(response => console.log(response)), // Log the full response
+        map(response => response.total_students), // Extract correct field
+        catchError(error => this.handleError(error, 'Failed to fetch total students'))
+      );
+  }
+
+
+
+  getTotalStudentsByCycle(cycleId: number): Observable<number> {
+    return this.http
+      .get<{  success: boolean; total_students: number }>(`${this.apiUrl}/cycles/${cycleId}/students/total`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.total_students),
+        catchError(error => this.handleError(error, `Failed to fetch total students for cycle (ID: ${cycleId})`))
+      );
+  }
+
+  getTotalStudentsByField(fieldId: number): Observable<number> {
+    return this.http
+      .get<{ total: number }>(`${this.apiUrl}/fields/${fieldId}/students/total`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.total),
+        catchError(error => this.handleError(error, `Failed to fetch total students for field (ID: ${fieldId})`))
+      );
+  }
+
+  getTotalStudentsBySpecialization(specializationId: number): Observable<number> {
+    return this.http
+      .get<{ total: number }>(`${this.apiUrl}/specializations/${specializationId}/students/total`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.total),
+        catchError(error => this.handleError(error, `Failed to fetch total students for specialization (ID: ${specializationId})`))
       );
   }
 

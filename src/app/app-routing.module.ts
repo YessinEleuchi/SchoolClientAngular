@@ -13,6 +13,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminManagementComponent } from './components/admin-management/admin-management.component';
 import { StudentListComponent } from './components/lists/student-list/student-list.component';
 import { StudentFormComponent } from './components/forms/student-form/student-form.component';
+import {OverviewComponent} from "./overview/overview.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,6 +24,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'teachers', pathMatch: 'full' },
       { path: 'teachers', component: TeacherComponent },
+      { path: 'overview', component: OverviewComponent },
       { path: 'teachers/add', component: TeacherFormComponent },
       { path: 'teachers/edit/:id', component: TeacherFormComponent },
       { path: 'parents', component: ParentListComponent },
