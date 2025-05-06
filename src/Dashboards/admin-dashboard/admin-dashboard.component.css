@@ -1,8 +1,8 @@
+/* Ensure smooth transitions and consistent styling */
+aside {
+  transition: width 0.3s ease-in-out;
+}
 
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24
+.group:hover .group-hover\:opacity-100 {
+  z-index: 100;
 }

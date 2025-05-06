@@ -1,65 +1,277 @@
-<div class="container mx-auto p-4 sm:p-6 bg-gray-100 rounded-xl min-h-screen">
+<!-- Loading Overlay -->
+<div class="loading-overlay" [ngClass]="{'hidden': !loading}" *ngIf="loading">
+  <div class="animate-spin mb-4">
+    <i class="fas fa-circle-notch text-blue-600 text-5xl"></i>
+  </div>
+  <h2 class="text-xl font-semibold text-gray-800 mb-2">Chargement des données</h2>
+  <p class="text-gray-600">Veuillez patienter pendant que nous préparons votre tableau de bord</p>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-8">
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-    <h1 class="text-2xl sm:text-3xl font-medium text-gray-800 mb-4 sm:mb-0">Student Dashboard</h1>
-  </div>
-  <!-- Student Count Card -->
-  <div class="bg-white rounded-xl p-4 sm:p-6 flex items-center shadow-sm mb-6 w-full max-w-md">
-    <div class="bg-green-500 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mr-4 text-xl sm:text-2xl">
-      <i class="fas fa-users"></i>
-    </div>
-    <div>
-      <p class="text-gray-500 text-sm sm:text-base">Total Students</p>
-      <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800">{{ totalStudents }}</h2>
-    </div>
-  </div>
-
-  <!-- Stats Container -->
-  <div class="mb-6">
-    <h2 class="text-xl sm:text-2xl font-medium text-gray-800 mb-4">Cycle Statistics</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      <!-- Stat Card: Ingénierie -->
-      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-blue-500">
-        <p class="font-medium text-gray-600 mb-2">Ingénierie</p>
-        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.ingenierie }}</p>
-        <p class="text-sm text-gray-500">{{ getPercentage(studentData.ingenierie) }}</p>
-      </div>
-      <!-- Stat Card: License -->
-      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-red-500">
-        <p class="font-medium text-gray-600 mb-2">License</p>
-        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.license }}</p>
-        <p class="text-sm text-gray-500">{{ getPercentage(studentData.license) }}</p>
-      </div>
-      <!-- Stat Card: Préparatoire -->
-      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-teal-500">
-        <p class="font-medium text-gray-600 mb-2">Préparatoire</p>
-        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.preparatoire }}</p>
-        <p class="text-sm text-gray-500">{{ getPercentage(studentData.preparatoire) }}</p>
-      </div>
-      <!-- Stat Card: Architecture -->
-      <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden border-l-4 border-yellow-500">
-        <p class="font-medium text-gray-600 mb-2">Architecture</p>
-        <p class="text-2xl font-semibold text-gray-800 mb-2">{{ studentData.architecture }}</p>
-        <p class="text-sm text-gray-500">{{ getPercentage(studentData.architecture) }}</p>
+  <header class="mb-8 animate-fade-in-down">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">
+        Dashboard Overview
+      </h1>
+      <div class="flex space-x-2">
+        <button class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-200 transition-colors duration-200 flex items-center" (click)="fetchStudentData()">
+          <i class="fas fa-sync-alt mr-2"></i>
+          <span>Actualiser</span>
+        </button>
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center">
+          <i class="fas fa-download mr-2"></i>
+          <span>Exporter</span>
+        </button>
       </div>
     </div>
+    <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-info-circle text-blue-500"></i>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-blue-700">
+            Bienvenue au tableau de bord. Dernière mise à jour: <span class="font-medium">{{ currentDate | date:'medium' }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Student Card -->
+    <div class="bg-white rounded-2xl p-6 shadow card-hover relative overflow-hidden animate-fade-in">
+      <div class="absolute top-0 right-0 w-24 h-24 -mt-6 -mr-6 rounded-full bg-blue-100 opacity-50"></div>
+      <div class="relative">
+        <div class="flex items-center">
+          <div class="bg-blue-100 p-3 rounded-full mr-4">
+            <i class="fas fa-user-graduate text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Total Students</p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ totalStudents | number }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Card -->
+    <div class="bg-white rounded-2xl p-6 shadow card-hover relative overflow-hidden animate-fade-in">
+      <div class="absolute top-0 right-0 w-24 h-24 -mt-6 -mr-6 rounded-full bg-green-100 opacity-50"></div>
+      <div class="relative">
+        <div class="flex items-center">
+          <div class="bg-green-100 p-3 rounded-full mr-4">
+            <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Total Teachers</p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ totalTeachers | number }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student-Teacher Ratio Card -->
+    <div class="bg-white rounded-2xl p-6 shadow card-hover relative overflow-hidden animate-fade-in">
+      <div class="absolute top-0 right-0 w-24 h-24 -mt-6 -mr-6 rounded-full bg-purple-100 opacity-50"></div>
+      <div class="relative">
+        <div class="flex items-center">
+          <div class="bg-purple-100 p-3 rounded-full mr-4">
+            <i class="fas fa-balance-scale text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Ratio Étudiant/Prof</p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ (totalStudents / totalTeachers).toFixed(1) }}:1</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graduation Rate Card (placeholder - you can connect this to real data) -->
+    <div class="bg-white rounded-2xl p-6 shadow card-hover relative overflow-hidden animate-fade-in">
+      <div class="absolute top-0 right-0 w-24 h-24 -mt-6 -mr-6 rounded-full bg-yellow-100 opacity-50"></div>
+      <div class="relative">
+        <div class="flex items-center">
+          <div class="bg-yellow-100 p-3 rounded-full mr-4">
+            <i class="fas fa-graduation-cap text-yellow-600 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Taux de réussite</p>
+            <h2 class="text-3xl font-bold text-gray-900">89%</h2>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- Cycle Statistics -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+      <i class="fas fa-chart-pie text-indigo-500 mr-2"></i>
+      Cycle Statistics
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 staggered">
+      <div *ngFor="let cycle of cycles; let i = index"
+           class="bg-white rounded-2xl p-6 shadow card-hover border-l-4"
+           [style.borderLeftColor]="generateColors(cycles.length)[i]">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="font-semibold text-gray-700">{{ cycle.name }}</p>
+            <p class="text-3xl font-bold text-gray-900 mt-2">{{ cycle.count | number }}</p>
+            <p class="text-sm text-gray-500 mt-1">{{ getPercentage(cycle.count) }}</p>
+          </div>
+          <div [ngClass]="getCycleIconClass(cycle.name)" class="p-2 rounded-lg">
+            <i [ngClass]="getCycleIcon(cycle.name)" [style.color]="generateColors(cycles.length)[i]"></i>
+          </div>
+        </div>
+        <div class="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full rounded-full"
+               [style.width]="getPercentage(cycle.count)"
+               [style.backgroundColor]="generateColors(cycles.length)[i]"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-
-  <!-- Charts Container -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
     <!-- Pie Chart -->
-    <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm flex justify-center items-center">
-      <div class="w-full max-w-[400px] h-[300px] sm:h-[350px]">
+    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Distribution des Étudiants par Cycle</h3>
+        <div class="flex space-x-2">
+          <button class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-expand-alt"></i>
+          </button>
+          <button class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+        </div>
+      </div>
+      <div class="relative h-80 sm:h-96">
         <canvas id="studentPieChart"></canvas>
       </div>
     </div>
+
     <!-- Bar Chart -->
-    <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
-      <div class="w-full h-[250px] sm:h-[300px]">
+    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Nombre d'Étudiants par Cycle</h3>
+        <div class="flex space-x-2">
+          <button class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-expand-alt"></i>
+          </button>
+          <button class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+        </div>
+      </div>
+      <div class="relative h-80 sm:h-96">
         <canvas id="studentBarChart"></canvas>
       </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity Section -->
+  <section class="mb-8 animate-fade-in" *ngIf="!loading">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="fas fa-history text-indigo-500 mr-2"></i>
+        Activités Récentes
+      </h2>
+      <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+        Voir tout <i class="fas fa-arrow-right ml-1"></i>
+      </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <ul class="divide-y divide-gray-200">
+        <li class="p-4 hover:bg-gray-50 transition-colors duration-150">
+          <div class="flex items-center">
+            <div class="bg-green-100 p-2 rounded-full">
+              <i class="fas fa-user-plus text-green-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-900">Nouvel étudiant inscrit</p>
+              <p class="text-sm text-gray-500">Un nouvel étudiant a été ajouté au cycle {{ cycles[0]?.name }}</p>
+            </div>
+            <div class="ml-auto text-sm text-gray-500">
+              Il y a 2 heures
+            </div>
+          </div>
+        </li>
+        <li class="p-4 hover:bg-gray-50 transition-colors duration-150">
+          <div class="flex items-center">
+            <div class="bg-blue-100 p-2 rounded-full">
+              <i class="fas fa-book text-blue-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-900">Nouveau cours ajouté</p>
+              <p class="text-sm text-gray-500">Un nouveau cours a été ajouté aux cours du cycle {{ cycles[0]?.name }}</p>
+            </div>
+            <div class="ml-auto text-sm text-gray-500">
+              Il y a 5 heures
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- Loading Skeleton (Displayed when loading) -->
+<div class="container mx-auto px-4 py-8" *ngIf="loading">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-2xl p-6 shadow">
+      <div class="flex items-center">
+        <div class="skeleton w-12 h-12 rounded-full mr-4"></div>
+        <div>
+          <p class="skeleton w-24 h-4 mb-2"></p>
+          <p class="skeleton w-16 h-8"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-6 w-48 skeleton mb-6"></div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-2xl p-6 shadow">
+      <div class="flex justify-between">
+        <div>
+          <p class="skeleton w-20 h-4 mb-2"></p>
+          <p class="skeleton w-16 h-8 mb-2"></p>
+          <p class="skeleton w-12 h-4"></p>
+        </div>
+        <div class="skeleton w-10 h-10 rounded-lg"></div>
+      </div>
+      <div class="mt-4 h-2 skeleton rounded-full"></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <div class="flex justify-between mb-4">
+        <p class="skeleton w-48 h-6"></p>
+        <div class="flex gap-2">
+          <p class="skeleton w-6 h-6 rounded"></p>
+          <p class="skeleton w-6 h-6 rounded"></p>
+        </div>
+      </div>
+      <div class="h-80 skeleton rounded"></div>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <div class="flex justify-between mb-4">
+        <p class="skeleton w-48 h-6"></p>
+        <div class="flex gap-2">
+          <p class="skeleton w-6 h-6 rounded"></p>
+          <p class="skeleton w-6 h-6 rounded"></p>
+        </div>
+      </div>
+      <div class="h-80 skeleton rounded"></div>
     </div>
   </div>
 </div>

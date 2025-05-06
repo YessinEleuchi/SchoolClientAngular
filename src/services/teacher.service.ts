@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, tap, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
@@ -53,9 +53,10 @@ export class TeacherService {
   }
   getTotalTeachers(): Observable<number> {
     return this.http
-      .get<{ total: number }>(`${this.apiUrl}/teachers/total`, { headers: this.getHeaders() })
+      .get<{ success: boolean; total_teachers: number }>(`${this.apiUrl}/teachers/total`, { headers: this.getHeaders() })
       .pipe(
-        map(response => response.total),
+        tap(response => console.log(response)), // Log the full response
+        map(response => response.total_teachers), // Extract correct field
         catchError(error => this.handleError(error, 'Failed to fetch total teachers'))
       );
   }

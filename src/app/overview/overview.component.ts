@@ -1,57 +1,91 @@
-import { Component, OnInit } from '@angular/core';
-import { Chart } from 'chart.js';
-import { Observable, forkJoin } from 'rxjs';
-import {StudentService} from "../../services/student.service";
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Chart, registerables } from 'chart.js';
+import { forkJoin, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { StudentService } from '../../services/student.service';
+import { CycleService } from '../../services/cycle.service';
+import { TeacherService } from '../../services/teacher.service';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-student-dashboard',
   templateUrl: './Overview.component.html',
-  styleUrls: []
+  styleUrls: ['./Overview.component.css']
 })
-export class OverviewComponent implements OnInit {
-  totalStudents = 0; // Initialize as 0, will be updated from service
-  studentData = {
-    ingenierie: 0,
-    license: 0,
-    preparatoire: 0,
-    architecture: 0
-  };
+export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
+  totalStudents = 0;
+  totalTeachers = 0;
+  cycles: { id: number; name: string; count: number }[] = [];
+  loading = true;
+  currentDate = new Date();
 
-  pieChart: any;
-  barChart: any;
+  pieChart: Chart<'pie', number[], string> | null = null;
+  barChart: Chart<'bar', number[], string> | null = null;
 
-  constructor(private studentService: StudentService) { }
+  private subscriptions: Subscription[] = [];
+
+  constructor(
+    private studentService: StudentService,
+    private teacherService: TeacherService,
+    private cycleService: CycleService
+  ) {}
 
   ngOnInit(): void {
     this.fetchStudentData();
   }
 
-  fetchStudentData(): void {
-    // Combine all API calls using forkJoin
-    forkJoin({
-      total: this.studentService.getTotalStudents(),
-      ingenierie: this.studentService.getTotalStudentsByCycle(1), // Cycle ID for Ingénierie
-      license: this.studentService.getTotalStudentsByCycle(2),    // Cycle ID for License
-      preparatoire: this.studentService.getTotalStudentsByCycle(3), // Cycle ID for Préparatoire
-      architecture: this.studentService.getTotalStudentsByCycle(4)  // Cycle ID for Architecture
-    }).subscribe({
-      next: (results) => {
-        // Update component properties with fetched data
-        this.totalStudents = results.total;
-        this.studentData.ingenierie = results.ingenierie;
-        this.studentData.license = results.license;
-        this.studentData.preparatoire = results.preparatoire;
-        this.studentData.architecture = results.architecture;
+  ngAfterViewInit(): void {
+    // Ensure charts are initialized after view is rendered
+    if (this.cycles.length > 0 && !this.pieChart && !this.barChart) {
+      setTimeout(() => this.initCharts(), 100);
+    }
+  }
 
-        // Initialize charts after data is fetched
-        this.initCharts();
-      },
-      error: (error) => {
-        console.error('Error fetching student data:', error);
-        // Optionally handle errors (e.g., show a message to the user)
-        this.initCharts(); // Initialize charts with default/empty data
-      }
-    });
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.pieChart) this.pieChart.destroy();
+    if (this.barChart) this.barChart.destroy();
+  }
+
+  fetchStudentData(): void {
+    this.loading = true;
+    this.currentDate = new Date();
+
+    const dataSub = forkJoin({
+      totalStudents: this.studentService.getTotalStudents(),
+      totalTeachers: this.teacherService.getTotalTeachers(),
+      cycles: this.cycleService.getAllCycles()
+    })
+      .pipe(
+        finalize(() => (this.loading = false))
+      )
+      .subscribe(
+        ({ totalStudents, totalTeachers, cycles }) => {
+          this.totalStudents = totalStudents;
+          this.totalTeachers = totalTeachers;
+
+          const requests = cycles.map(cycle =>
+            this.studentService.getTotalStudentsByCycle(cycle.id)
+          );
+
+          const countsSub = forkJoin(requests).subscribe(
+            counts => {
+              this.cycles = cycles.map((cycle, index) => ({
+                id: cycle.id,
+                name: cycle.name,
+                count: counts[index]
+              }));
+              this.initCharts();
+            },
+            error => console.error('Error fetching student counts:', error)
+          );
+          this.subscriptions.push(countsSub);
+        },
+        error => console.error('Error fetching data:', error)
+      );
+
+    this.subscriptions.push(dataSub);
   }
 
   initCharts(): void {
@@ -61,40 +95,64 @@ export class OverviewComponent implements OnInit {
 
   createPieChart(): void {
     const ctx = document.getElementById('studentPieChart') as HTMLCanvasElement;
+    if (!ctx) return;
 
-    const labels = ['Ingénierie', 'License', 'Préparatoire', 'Architecture'];
-    const data = [
-      this.studentData.ingenierie,
-      this.studentData.license,
-      this.studentData.preparatoire,
-      this.studentData.architecture
-    ];
+    if (this.pieChart) this.pieChart.destroy();
 
-    this.pieChart = new Chart(ctx, {
+    const labels = this.cycles.map(c => c.name);
+    const data = this.cycles.map(c => c.count);
+
+    this.pieChart = new Chart<'pie', number[], string>(ctx, {
       type: 'pie',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          data: data,
-          backgroundColor: [
-            '#3B82F6',
-            '#EF4444',
-            '#14B8A6',
-            '#FACC15'
-          ],
-          borderWidth: 1
+          data,
+          backgroundColor: this.generateColors(this.cycles.length),
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          hoverOffset: 20
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'right',
+            position: 'bottom',
+            labels: {
+              font: { size: 14 },
+              padding: 20,
+              color: '#1f2937'
+            }
           },
           title: {
             display: true,
-            text: 'Distribution des Étudiants par Cycle'
+            text: 'Student Distribution by Cycle',
+            font: { size: 18, weight: 'bold' },
+            color: '#1f2937',
+            padding: { top: 20, bottom: 20 }
+          },
+          tooltip: {
+            backgroundColor: '#1f2937',
+            titleFont: { size: 14 },
+            bodyFont: { size: 12 },
+            padding: 10,
+            callbacks: {
+              label: context => {
+                const label = context.label || '';
+                const value = context.formattedValue;
+                const percentage = this.getPercentage(this.cycles[context.dataIndex].count);
+                return `${label}: ${value} (${percentage})`;
+              }
+            }
           }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true,
+          duration: 1000,
+          easing: 'easeOutQuart'
         }
       }
     });
@@ -102,47 +160,66 @@ export class OverviewComponent implements OnInit {
 
   createBarChart(): void {
     const ctx = document.getElementById('studentBarChart') as HTMLCanvasElement;
+    if (!ctx) return;
 
-    const labels = ['Ingénierie', 'License', 'Préparatoire', 'Architecture'];
-    const data = [
-      this.studentData.ingenierie,
-      this.studentData.license,
-      this.studentData.preparatoire,
-      this.studentData.architecture
-    ];
+    if (this.barChart) this.barChart.destroy();
 
-    this.barChart = new Chart(ctx, {
+    const labels = this.cycles.map(c => c.name);
+    const data = this.cycles.map(c => c.count);
+
+    this.barChart = new Chart<'bar', number[], string>(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          label: 'Nombre d\'étudiants',
-          data: data,
-          backgroundColor: [
-            '#3B82F6',
-            '#EF4444',
-            '#14B8A6',
-            '#FACC15'
-          ],
-          borderWidth: 1
+          label: 'Number of Students',
+          data,
+          backgroundColor: this.generateColors(this.cycles.length)[0],
+          borderRadius: 8,
+          barThickness: 30
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         indexAxis: 'y',
         plugins: {
+          legend: { display: false },
           title: {
             display: true,
-            text: 'Nombre d\'Étudiants par Cycle'
+            text: 'Students per Cycle',
+            font: { size: 18, weight: 'bold' },
+            color: '#1f2937',
+            padding: { top: 20, bottom: 20 }
           },
-          legend: {
-            display: false
+          tooltip: {
+            backgroundColor: '#1f2937',
+            titleFont: { size: 14 },
+            bodyFont: { size: 12 },
+            padding: 10,
+            callbacks: {
+              label: context => {
+                const value = context.formattedValue;
+                const percentage = this.getPercentage(this.cycles[context.dataIndex].count);
+                return `Students: ${value} (${percentage})`;
+              }
+            }
           }
         },
         scales: {
           x: {
-            beginAtZero: true
+            beginAtZero: true,
+            grid: { display: false },
+            ticks: { color: '#1f2937', font: { size: 12 } }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: '#1f2937', font: { size: 12 } }
           }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
         }
       }
     });
@@ -151,6 +228,32 @@ export class OverviewComponent implements OnInit {
   getPercentage(value: number): string {
     return this.totalStudents > 0
       ? ((value / this.totalStudents) * 100).toFixed(1) + '%'
-      : '0%'; // Prevent division by zero
+      : '0%';
+  }
+
+  generateColors(count: number): string[] {
+    const baseColors = [
+      '#3b82f6', '#ef4444', '#14b8a6', '#facc15',
+      '#a78bfa', '#f472b6', '#34d399', '#f87171'
+    ];
+    return Array.from({ length: count }, (_, i) => baseColors[i % baseColors.length]);
+  }
+
+  getCycleIcon(name: string): string {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('ingenieur')) return 'fas fa-cogs';
+    if (lowerName.includes('license')) return 'fas fa-scroll';
+    if (lowerName.includes('preparatoire')) return 'fas fa-book-open';
+    if (lowerName.includes('architecture')) return 'fas fa-drafting-compass';
+    return 'fas fa-graduation-cap';
+  }
+
+  getCycleIconClass(name: string): string {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('ingenieur')) return 'bg-blue-100 text-blue-600';
+    if (lowerName.includes('license')) return 'bg-red-100 text-red-600';
+    if (lowerName.includes('preparatoire')) return 'bg-teal-100 text-teal-600';
+    if (lowerName.includes('architecture')) return 'bg-yellow-100 text-yellow-600';
+    return 'bg-gray-100 text-gray-600';
   }
 }
