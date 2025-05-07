@@ -1,6 +1,6 @@
 // src/app/components/teacher-dashboard/teacher-dashboard.component.ts
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../app/services/auth.service';
 
 @Component({
   selector: 'app-teacher-dashboard',

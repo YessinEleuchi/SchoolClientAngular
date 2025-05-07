@@ -1,0 +1,112 @@
+/* Ensure smooth transitions for background and hover effects */
+.bg-white, .dark\:bg-gray-800 {
+  transition: background-color 0.3s ease;
+}
+
+tr, .bg-gray-50, .dark\:bg-gray-700\/50 {
+  transition: background-color 0.15s ease;
+}
+
+/* Responsive table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  transition: padding 0.3s ease, font-size 0.3s ease;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  .p-4 {
+    padding: 1rem;
+  }
+
+  .p-6 {
+    padding: 1.5rem;
+  }
+
+  .max-w-7xl {
+    max-width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+
+  .mb-6 {
+    margin-bottom: 1rem;
+  }
+
+  .space-x-4 > * + * {
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
+
+  .gap-3 > * + * {
+    margin-top: 0.75rem;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .p-4 {
+    padding: 1.25rem;
+  }
+
+  .p-6 {
+    padding: 1.5rem;
+  }
+
+  .max-w-7xl {
+    max-width: 90%;
+  }
+}
+
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+  .p-4 {
+    padding: 1.5rem;
+  }
+
+  .p-6 {
+    padding: 2rem;
+  }
+}
+
+/* Ensure form, inputs, and buttons scale properly */
+select, button, input {
+  transition: padding 0.2s ease, font-size 0.2s ease;
+}
+
+/* Dark mode adjustments */
+.dark .bg-gray-50 {
+  background-color: #374151;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1f2937;
+}
+
+/* Prevent overflow in table */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure card view is smooth */
+.space-y-4 > * {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.space-y-4 > *:hover {
+  transform: translateY(-2px);
+}
+
+/* Input focus styles */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}

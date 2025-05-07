@@ -15,24 +15,24 @@ import { MatSelectModule } from '@angular/material/select'; // For mat-select
 import { MatDatepickerModule } from '@angular/material/datepicker'; // For date picker
 import { MatNativeDateModule } from '@angular/material/core'; // Required for date picker
 import { AppComponent } from './app.component';
-import { LoginComponent } from './components/login/login.component';
-import { AdminDashboardComponent } from '../Dashboards/admin-sidebar/admin-dashboard.component';
+import { LoginComponent } from './Modules/Auth/login/login.component';
+import { AdminDashboardComponent } from './components/sidebar/admin-dashboard.component';
 import { TeacherDashboardComponent } from '../Dashboards/teacher-dashboard/teacher-dashboard.component';
 import { StudentDashboardComponent } from '../Dashboards/student-dashboard/student-dashboard.component';
 import { ParentDashboardComponent } from '../Dashboards/parent-dashboard/parent-dashboard.component';
-import { TeacherComponent } from './components/lists/teacher-list/teacher.component';
-import { TeacherFormComponent } from './components/forms/teacher-form/teacher-form.component';
+import { TeacherComponent } from './Modules/Users/lists/teacher-list/teacher.component';
+import { TeacherFormComponent } from './Modules/Auth/add-teacher/teacher-form.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
-import { AuthGuard } from './guards/auth.guard';
-import { ParentListComponent } from './components/lists/parent-list/parent-list.component';
-import { ParentFormComponent } from './components/forms/parent-form/parent-form.component';
-import { AdminManagementComponent } from './components/admin-management/admin-management.component';
-import { EntityFormComponent } from './components/forms/entity-form/entity-form.component';
-import { StudentFormComponent } from './components/forms/student-form/student-form.component';
-import { StudentListComponent } from './components/lists/student-list/student-list.component';
-import { StudentService } from '../services/student.service';
+import { AuthGuard } from './Modules/Auth/guards/auth.guard';
+import { ParentListComponent } from './Modules/Users/lists/parent-list/parent-list.component';
+import { ParentFormComponent } from './Modules/Auth/add-parent/parent-form.component';
+import { AdminManagementComponent } from './Modules/entities/admin-entities/admin-management.component';
+import { EntityFormComponent } from './Modules/Auth/add-entity/entity-form.component';
+import { StudentFormComponent } from './Modules/Auth/add-student/student-form.component';
+import { StudentListComponent } from './Modules/Users/lists/student-list/student-list.component';
+import { StudentService } from './services/student.service';
 import { NgChartsModule } from 'ng2-charts';
-import { OverviewComponent } from './overview/overview.component';
+import { OverviewComponent } from './components/overview/overview.component';
 
 @NgModule({
   declarations: [
