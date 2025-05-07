@@ -11,6 +11,11 @@
       </button>
     </div>
 
+    <!-- Search Input -->
+    <div class="mb-4 sm:mb-6">
+      <input [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" type="text" placeholder="Search by name, email, or parent name..." class="w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
     <!-- Error Message -->
     <div *ngIf="errorMessage" class="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm sm:text-base animate-fade-in">
       {{ errorMessage }}
@@ -46,10 +51,10 @@
         </thead>
         <tbody>
         <tr *ngFor="let student of students" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.user.name }}</td>
-          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.user.email }}</td>
-          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.admission_no }}</td>
-          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.status }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.user?.name || 'N/A' }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.user?.email || 'N/A' }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.admission_no || 'N/A' }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.status || 'N/A' }}</td>
           <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.group?.name || 'N/A' }}</td>
           <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.parent?.user?.name || 'N/A' }}</td>
           <td class="p-3 sm:p-4">
@@ -80,10 +85,10 @@
       <div *ngFor="let student of students" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg shadow-sm card-hover staggered">
         <div class="flex justify-between items-start">
           <div>
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{ student.user.name }}</h3>
-            <p class="text-xs text-gray-600 dark:text-gray-400">{{ student.user.email }}</p>
-            <p class="text-xs text-gray-600 dark:text-gray-400">Admission No: {{ student.admission_no }}</p>
-            <p class="text-xs text-gray-600 dark:text-gray-400">Status: {{ student.status }}</p>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{ student.user?.name || 'N/A' }}</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400">{{ student.user?.email || 'N/A' }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Admission No: {{ student.admission_no || 'N/A' }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Status: {{ student.status || 'N/A' }}</p>
             <p class="text-xs text-gray-600 dark:text-gray-400">Group: {{ student.group?.name || 'N/A' }}</p>
             <p class="text-xs text-gray-600 dark:text-gray-400">Parent: {{ student.parent?.user?.name || 'N/A' }}</p>
           </div>
@@ -116,7 +121,6 @@
     </div>
 
     <!-- Pagination Controls -->
-    <!-- Pagination Controls -->
     <div *ngIf="!isLoading && students.length && pagination" class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="text-sm text-gray-600 dark:text-gray-400">
         Showing {{ (pagination.current_page - 1) * pagination.per_page + 1 }} to
@@ -143,5 +147,5 @@
         </button>
       </div>
     </div>
-</div>
+  </div>
 </div>

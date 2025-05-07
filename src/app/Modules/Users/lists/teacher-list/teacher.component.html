@@ -10,6 +10,11 @@
       </button>
     </div>
 
+    <!-- Search Input -->
+    <div class="mb-4 sm:mb-6">
+      <input [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" type="text" placeholder="Search by name or email..." class="w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
     <!-- Error Message -->
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}

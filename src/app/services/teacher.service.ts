@@ -35,10 +35,13 @@ export class TeacherService {
     }));
   }
 
-  getTeacherPaginated(page: number = 1, perPage: number = 6): Observable<{ teachers: Teacher[], pagination: any }> {
-    const params = new HttpParams()
+  getTeacherPaginated(page: number = 1, perPage: number = 6, searchQuery: string = ''): Observable<{ teachers: Teacher[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+    if (searchQuery.trim()) {
+      params = params.set('search', searchQuery.trim());
+    }
 
     return this.http
       .get<{ teachers: Teacher[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }>(
@@ -50,10 +53,9 @@ export class TeacherService {
           teachers: response.teachers,
           pagination: response.pagination
         })),
-        catchError(error => this.handleError(error, 'Failed to fetch paginated students'))
+        catchError(error => this.handleError(error, 'Failed to fetch paginated teachers'))
       );
   }
-
 
   getTeacherById(id: number): Observable<Teacher> {
     return this.http

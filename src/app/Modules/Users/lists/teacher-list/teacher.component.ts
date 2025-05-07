@@ -1,23 +1,28 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TeacherService } from '../../../../services/teacher.service';
 import { AuthService } from '../../../../services/auth.service';
 import { Teacher } from '../../../../models/teacher.model';
 import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-teacher',
   templateUrl: './teacher.component.html',
   styleUrls: ['./teacher.component.scss']
 })
-export class TeacherComponent implements OnInit {
+export class TeacherComponent implements OnInit, OnDestroy {
   dataSource: Teacher[] = [];
   displayedColumns: string[] = ['id', 'name', 'email', 'admission_no', 'status', 'action'];
   pagination: { current_page: number; last_page: number; per_page: number; total: number } | null = null;
   errorMessage: string = '';
   isLoading: boolean = false;
-  isMobile: boolean = window.innerWidth < 640; // Mobile breakpoint (sm)
+  isMobile: boolean = window.innerWidth < 640;
+  searchQuery: string = '';
+  private searchSubject = new Subject<string>();
+  private searchSubscription: Subscription | null = null;
 
   constructor(
     private teacherService: TeacherService,
@@ -32,7 +37,14 @@ export class TeacherComponent implements OnInit {
       this.authService.logout();
       return;
     }
+    this.setupSearch();
     this.loadTeachers();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -40,18 +52,35 @@ export class TeacherComponent implements OnInit {
     this.isMobile = window.innerWidth < 640;
   }
 
+  private setupSearch(): void {
+    this.searchSubscription = this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe((query) => {
+        this.searchQuery = query;
+        this.loadTeachers(1);
+      });
+  }
+
+  onSearchChange(query: string): void {
+    this.searchSubject.next(query);
+  }
+
   loadTeachers(page: number = 1, perPage: number = 6): void {
     this.isLoading = true;
-    this.teacherService.getTeacherPaginated(page, perPage).subscribe({
+    this.errorMessage = '';
+    this.teacherService.getTeacherPaginated(page, perPage, this.searchQuery).subscribe({
       next: (response) => {
         this.dataSource = response.teachers;
         this.pagination = response.pagination;
         this.isLoading = false;
-        this.errorMessage = '';
       },
       error: (err) => {
-        this.errorMessage = err.message;
+        this.errorMessage = err.message || 'Failed to load teachers';
         this.isLoading = false;
+        this.dataSource = [];
       }
     });
   }
@@ -66,7 +95,7 @@ export class TeacherComponent implements OnInit {
     if (!this.pagination) return [];
     const currentPage = this.pagination.current_page;
     const lastPage = this.pagination.last_page;
-    const maxPagesToShow = 5; // Show up to 5 page numbers
+    const maxPagesToShow = 5;
     const pages: number[] = [];
 
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
@@ -94,12 +123,11 @@ export class TeacherComponent implements OnInit {
       if (result) {
         this.teacherService.deleteTeacher(id).subscribe({
           next: () => {
-            // Reload the current page to maintain pagination
             this.loadTeachers(this.pagination!.current_page);
             this.errorMessage = '';
           },
           error: (err) => {
-            this.errorMessage = err.message;
+            this.errorMessage = err.message || 'Failed to delete teacher';
           }
         });
       }

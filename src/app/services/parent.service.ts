@@ -34,10 +34,13 @@ export class ParentService {
     }));
   }
 
-  getParentsPaginated(page: number = 1, perPage: number = 6): Observable<{ parents: Parent[], pagination: any }> {
-    const params = new HttpParams()
+  getParentsPaginated(page: number = 1, perPage: number = 6, searchQuery: string = ''): Observable<{ parents: Parent[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+    if (searchQuery.trim()) {
+      params = params.set('search', searchQuery.trim());
+    }
 
     return this.http
       .get<{ parents: Parent[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }>(
@@ -49,10 +52,9 @@ export class ParentService {
           parents: response.parents,
           pagination: response.pagination
         })),
-        catchError(error => this.handleError(error, 'Failed to fetch paginated students'))
+        catchError(error => this.handleError(error, 'Failed to fetch paginated parents'))
       );
   }
-
   getParentById(id: number): Observable<Parent> {
     return this.http
       .get<{ parent: Parent}>(`${this.apiUrl}/parents/${id}`, { headers: this.getHeaders() })

@@ -16,7 +16,8 @@ export class ParentListComponent implements OnInit {
   pagination: { current_page: number; last_page: number; per_page: number; total: number } | null = null;
   isLoading: boolean = false;
   errorMessage: string = '';
-  isMobile: boolean = window.innerWidth < 640; // Mobile breakpoint (sm)
+  isMobile: boolean = window.innerWidth < 640;
+  searchQuery: string = '';
 
   constructor(
     private parentService: ParentService,
@@ -41,7 +42,7 @@ export class ParentListComponent implements OnInit {
 
   loadParents(page: number = 1, perPage: number = 6): void {
     this.isLoading = true;
-    this.parentService.getParentsPaginated(page, perPage).subscribe({
+    this.parentService.getParentsPaginated(page, perPage, this.searchQuery).subscribe({
       next: (response) => {
         this.parents = response.parents;
         this.pagination = response.pagination;
@@ -49,10 +50,14 @@ export class ParentListComponent implements OnInit {
         this.errorMessage = '';
       },
       error: (err) => {
-        this.errorMessage = err.message;
+        this.errorMessage = err.message || 'Failed to load parents';
         this.isLoading = false;
       }
     });
+  }
+
+  onSearchChange(): void {
+    this.loadParents(1);
   }
 
   changePage(page: number): void {
@@ -65,7 +70,7 @@ export class ParentListComponent implements OnInit {
     if (!this.pagination) return [];
     const currentPage = this.pagination.current_page;
     const lastPage = this.pagination.last_page;
-    const maxPagesToShow = 5; // Show up to 5 page numbers
+    const maxPagesToShow = 5;
     const pages: number[] = [];
 
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
@@ -101,12 +106,11 @@ export class ParentListComponent implements OnInit {
       if (result) {
         this.parentService.deleteParent(id).subscribe({
           next: () => {
-            // Reload the current page to maintain pagination
             this.loadParents(this.pagination!.current_page);
             this.errorMessage = '';
           },
           error: (err) => {
-            this.errorMessage = err.message;
+            this.errorMessage = err.message || 'Failed to delete parent';
           }
         });
       }

@@ -49,9 +49,9 @@ $tablet: 1024px;
 }
 
 // Base styles
-   .animate-fade-in-down {
-     animation: fadeInDown 0.6s ease-out;
-   }
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s ease-out;
+}
 
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out;
@@ -66,10 +66,10 @@ $tablet: 1024px;
 }
 
 // Staggered animations
-   .staggered > * {
-     opacity: 0;
-     animation: fadeIn 0.5s ease-out forwards;
-   }
+.staggered > * {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
 
 .staggered > *:nth-child(1) { animation-delay: 0.1s; }
 .staggered > *:nth-child(2) { animation-delay: 0.2s; }
@@ -77,65 +77,65 @@ $tablet: 1024px;
 .staggered > *:nth-child(4) { animation-delay: 0.4s; }
 
 // Card hover effects
-   .card-hover {
-     transition: all 0.3s ease;
-     &:hover {
-       transform: translateY(-5px);
-       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-     }
-   }
+.card-hover {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
 
 // Loading overlay
-   .loading-overlay {
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     align-items: center;
-   }
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 // Skeleton loading
-   .skeleton {
-     background: linear-gradient(90deg, $gray-light 25%, darken($gray-light, 10%) 50%, $gray-light 75%);
-     background-size: 200% 100%;
-     animation: skeleton-loading 1.5s infinite;
-     border-radius: 4px;
-   }
+.skeleton {
+  background: linear-gradient(90deg, $gray-light 25%, darken($gray-light, 10%) 50%, $gray-light 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
 
 // Container
-   .container {
-     padding: 1rem;
-     max-width: 100%;
-     margin-left: auto;
-     margin-right: auto;
-     @media (min-width: $mobile) {
-       padding: 1.5rem;
-       max-width: 90%;
-     }
-     @media (min-width: $tablet) {
-       max-width: 1280px;
-     }
-   }
+.container {
+  padding: 1rem;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  @media (min-width: $mobile) {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+  @media (min-width: $tablet) {
+    max-width: 1280px;
+  }
+}
 
 // Card
-   .card {
-     background-color: $gray-light;
-     border-radius: 0.75rem;
-     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-     padding: 1rem;
-     transition: background-color 0.3s ease;
-     @media (min-width: $mobile) {
-       padding: 1.5rem;
-     }
-     .dark & {
-       background-color: $gray-darker;
-     }
-   }
+.card {
+  background-color: $gray-light;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  transition: background-color 0.3s ease;
+  @media (min-width: $mobile) {
+    padding: 1.5rem;
+  }
+  .dark & {
+    background-color: $gray-darker;
+  }
+}
 
 // Table
-   table {
-     width: 100%;
-     border-collapse: collapse;
-   }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 th, td {
   padding: 0.75rem;
@@ -173,11 +173,11 @@ tbody tr {
 }
 
 // Buttons
-   button {
-     transition: all 0.2s ease;
-     border-radius: 0.5rem;
-     font-weight: 600;
-   }
+button {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
 
 .btn-primary {
   background-color: $primary;
@@ -245,47 +245,72 @@ tbody tr {
   }
 }
 
-   .pagination {
-     margin-top: 1.5rem;
-     display: flex;
-     flex-direction: column;
-     justify-content: space-between;
-     align-items: center;
-     gap: 1rem;
-     @media (min-width: $mobile) {
-       flex-direction: row;
-     }
-     .pagination-info {
-       font-size: 0.875rem;
-       color: lighten($text-light, 20%);
-       .dark & {
-         color: $text-dark;
-       }
-     }
-     .pagination-buttons {
-       display: flex;
-       gap: 0.5rem;
-     }
-   }
+.pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  @media (min-width: $mobile) {
+    flex-direction: row;
+  }
+  .pagination-info {
+    font-size: 0.875rem;
+    color: lighten($text-light, 20%);
+    .dark & {
+      color: $text-dark;
+    }
+  }
+  .pagination-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
 
 // Error message
-   .error-message {
-     margin-bottom: 1rem;
-     padding: 0.75rem;
-     background-color: rgba($danger, 0.1);
-     color: darken($danger, 10%);
-     border-radius: 0.5rem;
-     font-size: 0.875rem;
-     .dark & {
-       background-color: rgba($danger, 0.2);
-       color: lighten($danger, 20%);
-     }
-     @media (min-width: $mobile) {
-       margin-bottom: 1.5rem;
-       padding: 1rem;
-       font-size: 1rem;
-     }
-   }
+.error-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: rgba($danger, 0.1);
+  color: darken($danger, 10%);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  .dark & {
+    background-color: rgba($danger, 0.2);
+    color: lighten($danger, 20%);
+  }
+  @media (min-width: $mobile) {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+// Input styles
+input {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid $border-light;
+  background-color: white;
+  color: $text-light;
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.2);
+  }
+  .dark & {
+    border-color: $border-dark;
+    background-color: $gray-darker;
+    color: $text-dark;
+  }
+  @media (min-width: $mobile) {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+}
 
 // Responsive adjustments
 @media (max-width: $mobile) {
@@ -296,6 +321,10 @@ tbody tr {
   .pagination {
     flex-direction: column;
     gap: 0.75rem;
+  }
+  input {
+    padding: 0.5rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -312,19 +341,19 @@ tbody tr {
 }
 
 // Dark mode
-   .dark {
-     .bg-gray-50 {
-       background-color: $gray-dark;
-     }
-     .bg-gray-100 {
-       background-color: $gray-darker;
-     }
-     .skeleton {
-       background: linear-gradient(90deg, $gray-dark 25%, darken($gray-dark, 10%) 50%, $gray-dark 75%);
-     }
-   }
+.dark {
+  .bg-gray-50 {
+    background-color: $gray-dark;
+  }
+  .bg-gray-100 {
+    background-color: $gray-darker;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, $gray-dark 25%, darken($gray-dark, 10%) 50%, $gray-dark 75%);
+  }
+}
 
 // Prevent table overflow
-   .overflow-x-auto {
-     -webkit-overflow-scrolling: touch;
-   }
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}

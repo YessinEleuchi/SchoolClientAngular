@@ -11,6 +11,11 @@
       </button>
     </div>
 
+    <!-- Search Input -->
+    <div class="mb-4 sm:mb-6">
+      <input [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()" type="text" placeholder="Search by name, email, or phone..." class="w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
     <!-- Error Message -->
     <div *ngIf="errorMessage" class="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm sm:text-base animate-fade-in">
       {{ errorMessage }}
@@ -39,7 +44,7 @@
           <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Name</th>
           <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Email</th>
           <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Phone</th>
-          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Status</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Address</th>
           <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Actions</th>
         </tr>
         </thead>
@@ -48,9 +53,8 @@
           <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.id }}</td>
           <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.user?.name || 'N/A' }}</td>
           <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.user?.email || 'N/A' }}</td>
-          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.user.phone || 'N/A' }}</td>
-          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.user.address || 'N/A' }}</td>
-
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.user?.phone || 'N/A' }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ parent.user?.address || 'N/A' }}</td>
           <td class="p-3 sm:p-4">
             <div class="flex space-x-2">
               <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center text-xs sm:text-sm"
@@ -82,7 +86,8 @@
             <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{ parent.user?.name || 'N/A' }}</h3>
             <p class="text-xs text-gray-600 dark:text-gray-400">ID: {{ parent.id }}</p>
             <p class="text-xs text-gray-600 dark:text-gray-400">Email: {{ parent.user?.email || 'N/A' }}</p>
-            <p class="text-xs text-gray-600 dark:text-gray-400">Phone: {{ parent.user.phone || 'N/A' }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Phone: {{ parent.user?.phone || 'N/A' }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Address: {{ parent.user?.address || 'N/A' }}</p>
           </div>
           <div class="flex space-x-2">
             <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-2 rounded-lg transition-colors duration-200 flex items-center text-xs"

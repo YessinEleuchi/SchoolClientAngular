@@ -46,10 +46,13 @@ export class StudentService {
       );
   }
 
-  getStudentsPaginated(page: number = 1, perPage: number = 6): Observable<{ students: Student[], pagination: any }> {
-    const params = new HttpParams()
+  getStudentsPaginated(page: number = 1, perPage: number = 6, searchQuery: string = ''): Observable<{ students: Student[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+    if (searchQuery.trim()) {
+      params = params.set('search', searchQuery.trim());
+    }
 
     return this.http
       .get<{ students: Student[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }>(
