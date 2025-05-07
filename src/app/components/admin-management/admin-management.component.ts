@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CycleService } from '../../../services/cycle.service';
 import { FieldService } from '../../../services/field.service';
 import { SpecializationService } from '../../../services/specialization.service';
@@ -32,7 +32,8 @@ interface Entity {
 
 @Component({
   selector: 'app-admin-management',
-  templateUrl: './admin-management.component.html'
+  templateUrl: './admin-management.component.html',
+  styleUrls: ['./admin-management.component.css']
 })
 export class AdminManagementComponent implements OnInit {
   entityTypes = ['cycle', 'field', 'specialization', 'level', 'group', 'subject'] as const;
@@ -50,6 +51,7 @@ export class AdminManagementComponent implements OnInit {
   errorMessage = '';
   showForm = false;
   selectedItem: Entity | null = null;
+  isMobile = window.innerWidth < 640; // Mobile breakpoint (sm)
 
   constructor(
     private cycleService: CycleService,
@@ -73,47 +75,46 @@ export class AdminManagementComponent implements OnInit {
     this.loadItems();
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.isMobile = window.innerWidth < 640;
+    this.cdr.detectChanges();
+  }
+
   loadRelatedData(): void {
-    // Load all related data for form dropdowns
     this.cycleService.getAllCycles().subscribe({
       next: cycles => {
         this.relatedData.cycles = cycles;
-        console.log('Related cycles:', cycles);
       },
       error: err => console.error('Error loading related cycles:', err)
     });
     this.fieldService.getAllFields().subscribe({
-      next: fields  => {
+      next: fields => {
         this.relatedData.fields = fields;
-        console.log('Related fields:', fields);
       },
       error: err => console.error('Error loading related fields:', err)
     });
     this.specializationService.getAllSpecializations().subscribe({
       next: specializations => {
         this.relatedData.specializations = specializations;
-        console.log('Related specializations:', specializations);
       },
       error: err => console.error('Error loading related specializations:', err)
     });
     this.levelService.getAllLevels().subscribe({
       next: levels => {
         this.relatedData.levels = levels;
-        console.log('Related levels:', levels);
       },
       error: err => console.error('Error loading related levels:', err)
     });
     this.groupService.getAllGroups().subscribe({
       next: groups => {
         this.relatedData.groups = groups;
-        console.log('Related groups:', groups);
       },
       error: err => console.error('Error loading related groups:', err)
     });
     this.subjectService.getAllSubjects().subscribe({
       next: subjects => {
         this.relatedData.subjects = subjects;
-        console.log('Related subjects:', subjects);
       },
       error: err => console.error('Error loading related subjects:', err)
     });
@@ -125,14 +126,12 @@ export class AdminManagementComponent implements OnInit {
     const serviceMethod = this.getServiceMethod();
     serviceMethod.pipe(first()).subscribe({
       next: (data: Entity[]) => {
-        console.log('Received items in loadItems:', data);
         this.items = data;
         this.isLoading = false;
         this.errorMessage = '';
         this.cdr.detectChanges();
       },
       error: (err: any) => {
-        console.error('Error in loadItems:', err);
         this.errorMessage = err.message || `Failed to load ${this.selectedEntityType}s`;
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -156,21 +155,24 @@ export class AdminManagementComponent implements OnInit {
     this.loadItems();
     this.showForm = false;
     this.selectedItem = null;
+    this.cdr.detectChanges();
   }
 
   addItem(): void {
     this.selectedItem = null;
     this.showForm = true;
+    this.cdr.detectChanges();
   }
 
   editItem(item: Entity): void {
     this.selectedItem = item;
     this.showForm = true;
+    this.cdr.detectChanges();
   }
 
   deleteItem(id: number): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
+      width: this.isMobile ? '90%' : '300px',
       data: { message: `Are you sure you want to delete this ${this.selectedEntityType}?` }
     });
 
@@ -186,6 +188,7 @@ export class AdminManagementComponent implements OnInit {
           error: (err: any) => {
             this.errorMessage = err.message || `Failed to delete ${this.selectedEntityType}`;
             this.isLoading = false;
+            this.cdr.detectChanges();
           }
         });
       }
@@ -208,12 +211,12 @@ export class AdminManagementComponent implements OnInit {
     this.showForm = false;
     this.selectedItem = null;
     this.loadItems();
-    this.cdr.detectChanges(); // Ensure UI updates
+    this.cdr.detectChanges();
   }
 
   onFormCancel(): void {
     this.showForm = false;
     this.selectedItem = null;
-    this.cdr.detectChanges(); // Ensure UI updates
+    this.cdr.detectChanges();
   }
 }

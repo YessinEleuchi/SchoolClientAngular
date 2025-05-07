@@ -1,3 +1,22 @@
+// Color variables for consistency
+$primary: #4f46e5; // Indigo
+$primary-hover: #4338ca;
+$danger: #ef4444; // Red
+$danger-hover: #dc2626;
+$success: #10b981; // Green
+$success-hover: #059669;
+$gray-light: #f3f4f6;
+$gray-dark: #374151;
+$gray-darker: #1f2937;
+$text-light: #1f2937;
+$text-dark: #e5e7eb;
+$border-light: #e5e7eb;
+$border-dark: #4b5563;
+
+// Breakpoints
+$mobile: 640px;
+$tablet: 1024px;
+
 // Animations
 @keyframes fadeInDown {
   from {
@@ -30,6 +49,7 @@
   100% { background-position: -200% 0; }
 }
 
+// Base styles
 .animate-fade-in-down {
   animation: fadeInDown 0.6s ease-out;
 }
@@ -47,10 +67,10 @@
 }
 
 // Staggered animations
-   .staggered > * {
-     opacity: 0;
-     animation: fadeIn 0.5s ease-out forwards;
-   }
+.staggered > * {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
 
 .staggered > *:nth-child(1) { animation-delay: 0.1s; }
 .staggered > *:nth-child(2) { animation-delay: 0.2s; }
@@ -58,40 +78,160 @@
 .staggered > *:nth-child(4) { animation-delay: 0.4s; }
 
 // Card hover effects
-   .card-hover {
-     transition: all 0.3s ease;
-
-     &:hover {
-       transform: translateY(-5px);
-       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-     }
-   }
+.card-hover {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
 
 // Loading overlay
-   .loading-overlay {
-     position: fixed;
-     top: 0;
-     left: 0;
-     right: 0;
-     bottom: 0;
-     background-color: rgba(255, 255, 255, 0.9);
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     align-items: center;
-     z-index: 50;
-     transition: opacity 0.5s ease-out;
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-     &.hidden {
-       opacity: 0;
-       pointer-events: none;
-     }
-   }
+// Skeleton loading
+.skeleton {
+  background: linear-gradient(90deg, $gray-light 25%, darken($gray-light, 10%) 50%, $gray-light 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
 
-// Skeleton loading elements
-   .skeleton {
-     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-     background-size: 200% 100%;
-     animation: skeleton-loading 1.5s infinite;
-     border-radius: 4px;
-   }
+// Container
+.container {
+  @apply p-4 sm:p-6 max-w-full sm:max-w-7xl mx-auto;
+}
+
+// Card
+.card {
+  @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-300;
+}
+
+// Table
+table {
+  @apply w-full border-collapse;
+}
+
+th, td {
+  @apply p-3 sm:p-4 text-left text-sm sm:text-base transition-all duration-300;
+}
+
+thead {
+  @apply bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 font-semibold;
+}
+
+tbody tr {
+  @apply border-b border-gray-200 dark:border-gray-700 transition-colors duration-150;
+  &:hover {
+    @apply bg-gray-50 dark:bg-gray-700/50;
+  }
+}
+
+// Buttons
+button {
+  @apply transition-all duration-200 rounded-lg font-semibold;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white py-2 px-4 sm:px-6 hover:bg-indigo-700 shadow-md hover:shadow-lg flex items-center justify-center;
+}
+
+.btn-success {
+  @apply bg-green-500 text-white py-1.5 px-3 sm:px-4 hover:bg-green-600 text-xs sm:text-sm flex items-center;
+}
+
+.btn-danger {
+  @apply bg-red-500 text-white py-1.5 px-3 sm:px-4 hover:bg-red-600 text-xs sm:text-sm flex items-center;
+}
+
+.btn-pagination {
+  @apply bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-2 px-4 hover:bg-gray-300 dark:hover:bg-gray-600;
+  &.active {
+    @apply bg-indigo-600 text-white;
+  }
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+}
+
+// Pagination
+.pagination {
+  @apply mt-6 flex flex-col sm:flex-row justify-between items-center gap-4;
+  .pagination-info {
+    @apply text-sm text-gray-600 dark:text-gray-400;
+  }
+  .pagination-buttons {
+    @apply flex space-x-2;
+  }
+}
+
+// Error message
+.error-message {
+  @apply mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm sm:text-base animate-fade-in;
+}
+
+// Responsive adjustments
+@media (max-width: $mobile) {
+  .container {
+    @apply p-4 max-w-full px-2;
+  }
+  .card {
+    @apply p-4;
+  }
+  .btn-primary {
+    @apply w-full;
+  }
+  th, td {
+    @apply p-3 text-sm;
+  }
+  .pagination {
+    @apply flex-col gap-3;
+  }
+}
+
+@media (min-width: $mobile) and (max-width: $tablet) {
+  .container {
+    @apply p-6 max-w-[90%];
+  }
+  .card {
+    @apply p-5;
+  }
+  th, td {
+    @apply p-3.5;
+  }
+}
+
+@media (min-width: $tablet) {
+  .container {
+    @apply p-6;
+  }
+  .card {
+    @apply p-6;
+  }
+  th, td {
+    @apply p-4;
+  }
+}
+
+// Dark mode
+.dark {
+  .bg-gray-50 {
+    background-color: $gray-dark;
+  }
+  .bg-gray-100 {
+    background-color: $gray-darker;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, $gray-dark 25%, darken($gray-dark, 10%) 50%, $gray-dark 75%);
+  }
+}
+
+// Prevent table overflow
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}

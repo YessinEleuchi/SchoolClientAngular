@@ -1,6 +1,6 @@
 import { User } from './user.model';
 import { Group } from './group.model';
-import { Parents } from './parent.model';
+import { Parent } from './parent.model';
 import {StudentStatusEnums} from "../enums/student-status.enums";
 
 export interface Student {
@@ -14,5 +14,5 @@ export interface Student {
   // Relations
   user?: User;
   group?: Group;
-  parent?: Parents;
+  parent?: Parent;
 }

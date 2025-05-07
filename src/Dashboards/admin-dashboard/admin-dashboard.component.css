@@ -1,8 +1,0 @@
-/* Ensure smooth transitions and consistent styling */
-aside {
-  transition: width 0.3s ease-in-out;
-}
-
-.group:hover .group-hover\:opacity-100 {
-  z-index: 100;
-}

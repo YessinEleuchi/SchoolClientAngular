@@ -1,10 +1,10 @@
-<div class="p-6 max-w-7xl mx-auto">
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors duration-300">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Student Management</h1>
-      <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+<div class="p-4 sm:p-6 max-w-full sm:max-w-7xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-300 animate-fade-in-down">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-4">
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Student Management</h1>
+      <button class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex items-center justify-center"
               (click)="addStudent()">
-        <svg class="w-5 h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
         Add Student
@@ -12,69 +12,136 @@
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
+    <div *ngIf="errorMessage" class="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm sm:text-base animate-fade-in">
       {{ errorMessage }}
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="text-gray-600 dark:text-gray-400 text-center py-8">
-      <svg class="animate-spin h-8 w-8 mx-auto text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
+    <div *ngIf="isLoading" class="text-gray-600 dark:text-gray-400 text-center py-8 loading-overlay">
+      <svg class="animate-spin h-6 w-6 sm:h-8 sm:w-8 mx-auto text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <span class="block mt-2">Loading...</span>
+      <span class="block mt-2 text-sm sm:text-base">Loading...</span>
     </div>
 
-    <!-- Table -->
-    <div class="overflow-x-auto" *ngIf="!isLoading && students.length">
-      <table class="w-full border-collapse">
+    <!-- Skeleton Loading for Table/Card View -->
+    <div *ngIf="isLoading" class="space-y-4 staggered">
+      <div *ngFor="let i of [1,2,3]" class="skeleton h-16 rounded-lg"></div>
+    </div>
+
+    <!-- Table for Desktop/Tablet -->
+    <div class="overflow-x-auto hidden sm:block" *ngIf="!isLoading && students.length">
+      <table class="w-full border-collapse staggered">
         <thead class="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200">
         <tr>
-          <th class="p-4 text-left font-semibold">Name</th>
-          <th class="p-4 text-left font-semibold">Email</th>
-          <th class="p-4 text-left font-semibold">Admission No</th>
-          <th class="p-4 text-left font-semibold">Status</th>
-          <th class="p-4 text-left font-semibold">Group</th>
-          <th class="p-4 text-left font-semibold">Parent</th>
-          <th class="p-4 text-left font-semibold">Actions</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Name</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Email</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Admission No</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Status</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Group</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Parent</th>
+          <th class="p-3 sm:p-4 text-left font-semibold text-sm sm:text-base">Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let student of students"
-            class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.user.name }}</td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.user.email }}</td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.admission_no }}</td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.status }}</td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.group?.name || 'N/A' }}</td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ student.parent?.user?.name || 'N/A' }}</td>
-          <td class="p-4">
-            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-4 rounded-lg mr-2 transition-colors duration-200"
-                    (click)="editStudent(student.id)">
-              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
-              </svg>
-              Edit
-            </button>
-            <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-4 rounded-lg transition-colors duration-200"
-                    (click)="deleteStudent(student.id)">
-              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Delete
-            </button>
+        <tr *ngFor="let student of students" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.user.name }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.user.email }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.admission_no }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.status }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.group?.name || 'N/A' }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ student.parent?.user?.name || 'N/A' }}</td>
+          <td class="p-3 sm:p-4">
+            <div class="flex space-x-2">
+              <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center text-xs sm:text-sm"
+                      (click)="editStudent(student.id)">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+                </svg>
+                Edit
+              </button>
+              <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center text-xs sm:text-sm"
+                      (click)="deleteStudent(student.id)">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Delete
+              </button>
+            </div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
 
+    <!-- Card View for Mobile -->
+    <div class="space-y-4 block sm:hidden" *ngIf="!isLoading && students.length">
+      <div *ngFor="let student of students" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg shadow-sm card-hover staggered">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{ student.user.name }}</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400">{{ student.user.email }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Admission No: {{ student.admission_no }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Status: {{ student.status }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Group: {{ student.group?.name || 'N/A' }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Parent: {{ student.parent?.user?.name || 'N/A' }}</p>
+          </div>
+          <div class="flex space-x-2">
+            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-2 rounded-lg transition-colors duration-200 flex items-center text-xs"
+                    (click)="editStudent(student.id)">
+              <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+              </svg>
+              Edit
+            </button>
+            <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-lg transition-colors duration-200 flex items-center text-xs"
+                    (click)="deleteStudent(student.id)">
+              <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- No Students Found -->
-    <div *ngIf="!isLoading && !students.length" class="text-gray-500 dark:text-gray-400 text-center py-8">
-      <svg class="w-12 h-12 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div *ngIf="!isLoading && !students.length" class="text-gray-500 dark:text-gray-400 text-center py-8 animate-fade-in">
+      <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m6 2v-2m-6-6h6M5 12h14M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
       </svg>
-      No students found.
+      <span class="text-sm sm:text-base">No students found.</span>
     </div>
-  </div>
+
+    <!-- Pagination Controls -->
+    <!-- Pagination Controls -->
+    <div *ngIf="!isLoading && students.length && pagination" class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="text-sm text-gray-600 dark:text-gray-400">
+        Showing {{ (pagination.current_page - 1) * pagination.per_page + 1 }} to
+        {{ pagination.current_page * pagination.per_page > pagination.total ? pagination.total : pagination.current_page * pagination.per_page }}
+        of {{ pagination.total }} students
+      </div>
+      <div class="flex space-x-2">
+        <button class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="pagination.current_page === 1"
+                (click)="changePage(pagination.current_page - 1)">
+          Previous
+        </button>
+        <button *ngFor="let page of getPageNumbers()"
+                class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+                [class.bg-indigo-600]="page === pagination.current_page"
+                [class.text-white]="page === pagination.current_page"
+                (click)="changePage(page)">
+          {{ page }}
+        </button>
+        <button class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="pagination.current_page === pagination.last_page"
+                (click)="changePage(pagination.current_page + 1)">
+          Next
+        </button>
+      </div>
+    </div>
+</div>
 </div>

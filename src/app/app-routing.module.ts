@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
-import { AdminDashboardComponent } from '../Dashboards/admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from '../Dashboards/admin-sidebar/admin-dashboard.component';
 import { TeacherDashboardComponent } from '../Dashboards/teacher-dashboard/teacher-dashboard.component';
 import { StudentDashboardComponent } from '../Dashboards/student-dashboard/student-dashboard.component';
 import { ParentDashboardComponent } from '../Dashboards/parent-dashboard/parent-dashboard.component';

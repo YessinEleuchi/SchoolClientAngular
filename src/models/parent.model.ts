@@ -1,7 +1,7 @@
 import { User } from './user.model';
 import { Student } from './student.model';
 
-export interface Parents {
+export interface Parent {
   id?: number;
   user_id: number;
   admission_no?: string;

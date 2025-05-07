@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
-import { Parents } from '../models/parent.model';
+import { Parent } from '../models/parent.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,25 +34,42 @@ export class ParentService {
     }));
   }
 
-  getAllParents(): Observable<Parents[]> {
+  getParentsPaginated(page: number = 1, perPage: number = 6): Observable<{ parents: Parent[], pagination: any }> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
     return this.http
-      .get<{ parents: Parents[] }>(`${this.apiUrl}/parents`, { headers: this.getHeaders() })
+      .get<{ parents: Parent[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }>(
+        `${this.apiUrl}/parents`,
+        { headers: this.getHeaders(), params }
+      )
       .pipe(
-        map(response => response.parents),
-        catchError(error => this.handleError(error, 'Failed to fetch parents'))
+        map(response => ({
+          parents: response.parents,
+          pagination: response.pagination
+        })),
+        catchError(error => this.handleError(error, 'Failed to fetch paginated students'))
       );
   }
 
-  getParentById(id: number): Observable<Parents> {
+  getParentById(id: number): Observable<Parent> {
     return this.http
-      .get<{ parent: Parents }>(`${this.apiUrl}/parents/${id}`, { headers: this.getHeaders() })
+      .get<{ parent: Parent}>(`${this.apiUrl}/parents/${id}`, { headers: this.getHeaders() })
       .pipe(
         map(response => response.parent),
         catchError(error => this.handleError(error, `Failed to fetch parent (ID: ${id})`))
       );
   }
-
-  addParent(data: Partial<Parents>): Observable<void> {
+  getAllParents(): Observable<Parent[]> {
+    return this.http
+      .get<{ parents: Parent[] }>(`${this.apiUrl}/parents`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.parents),
+        catchError(error => this.handleError(error, 'Failed to fetch parents'))
+      );
+  }
+  addParent(data: Partial<Parent>): Observable<void> {
     console.log('Add parent request data:', data);
     return this.http
       .post<void>(`${this.apiUrl}/add-parents`, data, { headers: this.getHeaders() })
@@ -61,7 +78,7 @@ export class ParentService {
       );
   }
 
-  updateParent(id: number, data: Partial<Parents>): Observable<void> {
+  updateParent(id: number, data: Partial<Parent>): Observable<void> {
     console.log('Update parent request data:', data);
     return this.http
       .put<void>(`${this.apiUrl}/parents/${id}`, data, { headers: this.getHeaders() })

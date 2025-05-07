@@ -1,13 +1,13 @@
-<div class="p-6 max-w-7xl mx-auto">
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors duration-300">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Admin Management</h1>
-      <div class="flex items-center space-x-4">
-        <select [(ngModel)]="selectedEntityType" (change)="onEntityTypeChange()" class="border-gray-300 rounded-md shadow-sm p-2">
+<div class="p-4 sm:p-6 max-w-full sm:max-w-7xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-300">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-4">
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Admin Management</h1>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+        <select [(ngModel)]="selectedEntityType" (change)="onEntityTypeChange()" class="w-full sm:w-auto border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-sm sm:text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200">
           <option *ngFor="let type of entityTypes" [value]="type">{{ type | titlecase }}</option>
         </select>
-        <button (click)="addItem()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
-          <svg class="w-5 h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button (click)="addItem()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex items-center justify-center">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Add {{ selectedEntityType | titlecase }}
@@ -16,15 +16,13 @@
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
+    <div *ngIf="errorMessage" class="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm sm:text-base">
       {{ errorMessage }}
     </div>
 
-
-
-    <div *ngIf="showForm">
+    <!-- Form -->
+    <div *ngIf="showForm" class="mb-4 sm:mb-6">
       <app-entity-form
-        *ngIf="showForm"
         [entityType]="selectedEntityType"
         [entityData]="selectedItem"
         [relatedData]="relatedData"
@@ -33,48 +31,52 @@
       ></app-entity-form>
     </div>
 
+    <!-- Table or Card View -->
     <div *ngIf="!showForm" class="overflow-x-auto">
-      <table class="min-w-full border-collapse">
+      <!-- Desktop Table View -->
+      <table *ngIf="!isMobile" class="min-w-full border-collapse hidden sm:table">
         <thead class="bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200">
         <tr>
-          <th class="p-4 text-left font-semibold border-b">Name</th>
-          <th class="p-4 text-left font-semibold border-b">Related Entity</th>
-          <th class="p-4 text-left font-semibold border-b">Created At</th>
-          <th class="p-4 text-left font-semibold border-b">Actions</th>
+          <th class="p-3 sm:p-4 text-left font-semibold border-b text-sm sm:text-base">Name</th>
+          <th class="p-3 sm:p-4 text-left font-semibold border-b text-sm sm:text-base">Related Entity</th>
+          <th class="p-3 sm:p-4 text-left font-semibold border-b text-sm sm:text-base">Created At</th>
+          <th class="p-3 sm:p-4 text-left font-semibold border-b text-sm sm:text-base">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of items" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ item.name }}</td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ item.name }}</td>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">
             <ng-container [ngSwitch]="selectedEntityType">
-              <span *ngSwitchCase="'field'">{{ item.Cycle?.name || 'N/A' }}</span>
+              <span *ngSwitchCase="'field'">{{ item.cycle?.name || 'N/A' }}</span>
               <span *ngSwitchCase="'specialization'">{{ item.field?.name || 'N/A' }}</span>
               <span *ngSwitchCase="'level'">{{ item.specialization?.name || 'N/A' }}</span>
               <span *ngSwitchCase="'group'">{{ item.level?.name || 'N/A' }}</span>
-              <span *ngSwitchCase="'subject'">{{ item.level?.name }}</span>
+              <span *ngSwitchCase="'subject'">{{ item.level?.name || 'N/A' }}</span>
               <span *ngSwitchDefault>-</span>
             </ng-container>
           </td>
-          <td class="p-4 text-gray-900 dark:text-gray-200">{{ item.created_at | date:'dd/MM/yyyy' }}</td>
-          <td class="p-4">
-            <button (click)="editItem(item)" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-4 rounded-lg mr-2 transition-colors duration-200">
-              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
-              </svg>
-              Edit
-            </button>
-            <button (click)="deleteItem(item.id)" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-4 rounded-lg transition-colors duration-200">
-              <svg class="w-5 h-5 inline-block -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Delete
-            </button>
+          <td class="p-3 sm:p-4 text-gray-900 dark:text-gray-200 text-sm sm:text-base">{{ item.created_at | date:'dd/MM/yyyy' }}</td>
+          <td class="p-3 sm:p-4">
+            <div class="flex space-x-2">
+              <button (click)="editItem(item)" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center text-xs sm:text-sm">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+                </svg>
+                Edit
+              </button>
+              <button (click)="deleteItem(item.id)" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center text-xs sm:text-sm">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Delete
+              </button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="items.length === 0 && !isLoading">
-          <td colspan="4" class="py-8 text-center text-gray-500 dark:text-gray-400">
-            <svg class="w-12 h-12 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <td colspan="4" class="py-8 text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base">
+            <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m6 2v-2m-6-6h6M5 12h14M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
             No {{ selectedEntityType }}s found.
@@ -82,7 +84,7 @@
         </tr>
         <tr *ngIf="isLoading">
           <td colspan="4" class="py-8 text-center text-gray-600 dark:text-gray-400">
-            <svg class="animate-spin h-8 w-8 mx-auto text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
+            <svg class="animate-spin h-6 w-6 sm:h-8 sm:w-8 mx-auto text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -91,6 +93,55 @@
         </tr>
         </tbody>
       </table>
+
+      <!-- Mobile Card View -->
+      <div *ngIf="isMobile" class="space-y-4">
+        <div *ngFor="let item of items" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg shadow-sm hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{ item.name }}</h3>
+              <p class="text-xs text-gray-600 dark:text-gray-400">
+                <ng-container [ngSwitch]="selectedEntityType">
+                  <span *ngSwitchCase="'field'">{{ item.cycle?.name || 'N/A' }}</span>
+                  <span *ngSwitchCase="'specialization'">{{ item.field?.name || 'N/A' }}</span>
+                  <span *ngSwitchCase="'level'">{{ item.specialization?.name || 'N/A' }}</span>
+                  <span *ngSwitchCase="'group'">{{ item.level?.name || 'N/A' }}</span>
+                  <span *ngSwitchCase="'subject'">{{ item.level?.name || 'N/A' }}</span>
+                  <span *ngSwitchDefault>-</span>
+                </ng-container>
+              </p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">{{ item.created_at | date:'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="flex space-x-2">
+              <button (click)="editItem(item)" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-2 rounded-lg transition-colors duration-200 flex items-center text-xs">
+                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+                </svg>
+                Edit
+              </button>
+              <button (click)="deleteItem(item.id)" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-lg transition-colors duration-200 flex items-center text-xs">
+                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="items.length === 0 && !isLoading" class="text-center text-gray-500 dark:text-gray-400 py-8">
+          <svg class="w-10 h-10 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m6 2v-2m-6-6h6M5 12h14M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <p class="text-sm">No {{ selectedEntityType }}s found.</p>
+        </div>
+        <div *ngIf="isLoading" class="text-center text-gray-600 dark:text-gray-400 py-8">
+          <svg class="animate-spin h-6 w-6 mx-auto text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="text-sm mt-2">Loading...</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

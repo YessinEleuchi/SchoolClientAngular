@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable, tap, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
@@ -26,7 +26,6 @@ export class StudentService {
       'Content-Type': 'application/json'
     });
   }
-
   private handleError(error: any, defaultMessage: string): Observable<never> {
     const message = error.error?.message || error.message || defaultMessage;
     console.error(`${defaultMessage}:`, error);
@@ -46,6 +45,25 @@ export class StudentService {
         catchError(error => this.handleError(error, 'Failed to fetch students'))
       );
   }
+
+  getStudentsPaginated(page: number = 1, perPage: number = 6): Observable<{ students: Student[], pagination: any }> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
+    return this.http
+      .get<{ students: Student[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }>(
+        `${this.apiUrl}/studentsPaginated`,
+        { headers: this.getHeaders(), params }
+      )
+      .pipe(
+        map(response => ({
+          students: response.students,
+          pagination: response.pagination
+        })),
+        catchError(error => this.handleError(error, 'Failed to fetch paginated students'))
+      );
+  }
   getTotalStudents(): Observable<number> {
     return this.http
       .get<{ success: boolean; total_students: number }>(`${this.apiUrl}/students/total`, { headers: this.getHeaders() })
@@ -55,6 +73,8 @@ export class StudentService {
         catchError(error => this.handleError(error, 'Failed to fetch total students'))
       );
   }
+
+
 
 
 

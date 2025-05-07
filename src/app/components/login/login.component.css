@@ -1,4 +1,58 @@
-:host {
-    display: block;
+/* Smooth transitions for background, padding, and font sizes */
+.bg-white, .dark\:bg-gray-800 {
+  transition: background-color 0.3s ease, padding 0.3s ease;
+}
+
+input, button {
+  transition: padding 0.2s ease, font-size 0.2s ease;
+}
+
+/* Dark mode adjustments */
+.dark .bg-gray-100 {
+  background-color: #1f2937;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  .p-4 {
+    padding: 1rem;
   }
-  
+
+  .max-w-sm {
+    max-width: 100%;
+  }
+
+  .text-xl {
+    font-size: 1.125rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .p-6 {
+    padding: 1.5rem;
+  }
+
+  .max-w-md {
+    max-width: 28rem;
+  }
+}
+
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+  .p-6 {
+    padding: 2rem;
+  }
+
+  .max-w-md {
+    max-width: 32rem;
+  }
+}

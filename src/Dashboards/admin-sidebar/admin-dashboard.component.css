@@ -1,0 +1,73 @@
+/* Smooth transitions for sidebar */
+aside {
+  transition: width 0.3s ease-in-out;
+}
+
+/* Ensure tooltips are visible and properly positioned */
+.group:hover .group-hover\:opacity-100 {
+  z-index: 100;
+}
+
+/* Responsive adjustments for main content */
+main {
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Ensure content is readable on smaller screens */
+@media (max-width: 640px) {
+  main {
+    padding: 1rem;
+  }
+
+  .max-w-7xl {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 640px) and (max-width: 1023px) {
+  main {
+    padding: 1.5rem;
+  }
+
+  aside {
+    width: 20rem; /* Default expanded width for tablets */
+  }
+
+  aside.w-20 {
+    width: 5rem; /* Collapsed width for tablets */
+  }
+}
+
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+  main {
+    padding: 2rem;
+  }
+}
+
+/* Ensure icons and text scale appropriately */
+svg {
+  transition: width 0.2s ease, height 0.2s ease;
+}
+
+/* Prevent overflow issues */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+}
+
+/* Dark mode adjustments */
+.dark .bg-gray-100 {
+  background-color: #1f2937;
+}
+
+.dark .bg-gray-900 {
+  background-color: #111827;
+}
+
+/* Ensure router outlet content is responsive */
+router-outlet + * {
+  display: block;
+  width: 100%;
+}

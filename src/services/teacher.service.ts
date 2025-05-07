@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable, tap, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { Teacher } from '../models/teacher.model';
+import {Student} from "../models/student.model";
 
 @Injectable({
   providedIn: 'root'
@@ -34,14 +35,25 @@ export class TeacherService {
     }));
   }
 
-  getAllTeachers(): Observable<Teacher[]> {
+  getTeacherPaginated(page: number = 1, perPage: number = 6): Observable<{ teachers: Teacher[], pagination: any }> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
     return this.http
-      .get<{ data: Teacher[] }>(`${this.apiUrl}/teachers`, { headers: this.getHeaders() })
+      .get<{ teachers: Teacher[], pagination: { current_page: number, last_page: number, per_page: number, total: number } }>(
+        `${this.apiUrl}/teachers`,
+        { headers: this.getHeaders(), params }
+      )
       .pipe(
-        map(response => response.data),
-        catchError(error => this.handleError(error, 'Failed to fetch teachers'))
+        map(response => ({
+          teachers: response.teachers,
+          pagination: response.pagination
+        })),
+        catchError(error => this.handleError(error, 'Failed to fetch paginated students'))
       );
   }
+
 
   getTeacherById(id: number): Observable<Teacher> {
     return this.http
