@@ -1,83 +1,327 @@
-<div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">{{ isEditMode ? 'Edit Teacher' : 'Add Teacher' }}</h1>
-    <div *ngIf="successMessage" class="text-green-500 mb-4">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-      <div>
-        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-        <input id="name" formControlName="name" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="text-red-500 text-sm">
-          Name is required
-        </div>
-      </div>
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input id="email" formControlName="email" type="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="text-red-500 text-sm">
-          Valid email is required
-        </div>
-      </div>
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password </label>
-        <input id="password" formControlName="password" type="password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="text-red-500 text-sm">
-          Password must be at least 6 characters
-        </div>
-      </div>
-      <div>
-        <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
-        <select id="gender" formControlName="gender" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-          <option value="" disabled>Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-        <div *ngIf="form.get('gender')?.touched && form.get('gender')?.invalid" class="text-red-500 text-sm">
-          Gender is required
-        </div>
-      </div>
-      <div>
-        <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-        <input id="phone" formControlName="phone" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid" class="text-red-500 text-sm">
-          Valid phone number is required
-        </div>
-      </div>
-      <div>
-        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-        <input id="address" formControlName="address" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('address')?.touched && form.get('address')?.invalid" class="text-red-500 text-sm">
-          Address is required
-        </div>
-      </div>
-      <div>
-        <label for="dateofbirth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-        <input id="dateofbirth" formControlName="dateofbirth" type="date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('dateofbirth')?.touched && form.get('dateofbirth')?.invalid" class="text-red-500 text-sm">
-          Date of birth is required
-        </div>
-      </div>
-      <div>
-        <label for="admission_no" class="block text-sm font-medium text-gray-700">Admission No</label>
-        <input id="admission_no" formControlName="admission_no" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <div *ngIf="form.get('admission_no')?.touched && form.get('admission_no')?.invalid" class="text-red-500 text-sm">
-          Admission number is required
-        </div>
-      </div>
-      <div>
-        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-        <select id="status" formControlName="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-          <option value="" disabled>Select status</option>
-          <option *ngFor="let status of teacherStatuses" [value]="status">{{ status }}</option>
-        </select>
-        <div *ngIf="form.get('status')?.touched && form.get('status')?.invalid" class="text-red-500 text-sm">
-          Status is required
-        </div>
-      </div>
-      <div class="flex space-x-4">
-        <button type="submit" [disabled]="isLoading" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          {{ isLoading ? 'Saving...' : 'Save' }}
-        </button>
-        <button type="button" [disabled]="isLoading" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" [routerLink]="['/admin/teachers']">Cancel</button>
-      </div>
-    </form>
+<div class="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-6">
+    {{ isEditMode ? 'Edit Teacher' : 'Add Teacher' }}
+  </h1>
+
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="flex items-center bg-green-100 text-green-700 p-4 mb-6 rounded-md transition-all duration-300"
+    role="alert"
+  >
+    <svg
+      class="w-5 h-5 mr-2"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 13l4 4L19 7"
+      ></path>
+    </svg>
+    {{ successMessage }}
   </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="flex items-center bg-red-100 text-red-700 p-4 mb-6 rounded-md transition-all duration-300"
+    role="alert"
+  >
+    <svg
+      class="w-5 h-5 mr-2"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      ></path>
+    </svg>
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5">
+    <!-- Name -->
+    <div>
+      <label
+        for="name"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Name
+      </label>
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('name')?.touched && form.get('name')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('name')?.touched && form.get('name')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Name is required
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label
+        for="email"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Email
+      </label>
+      <input
+        id="email"
+        formControlName="email"
+        type="email"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('email')?.touched && form.get('email')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('email')?.touched && form.get('email')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Valid email is required
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label
+        for="password"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Password
+      </label>
+      <input
+        id="password"
+        formControlName="password"
+        type="password"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('password')?.touched && form.get('password')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('password')?.touched && form.get('password')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Password must be at least 6 characters
+      </div>
+    </div>
+
+    <!-- Gender -->
+    <div>
+      <label
+        for="gender"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Gender
+      </label>
+      <select
+        id="gender"
+        formControlName="gender"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('gender')?.touched && form.get('gender')?.invalid
+        }"
+      >
+        <option value="" disabled>Select gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <div
+        *ngIf="form.get('gender')?.touched && form.get('gender')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Gender is required
+      </div>
+    </div>
+
+    <!-- Phone -->
+    <div>
+      <label
+        for="phone"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Phone
+      </label>
+      <input
+        id="phone"
+        formControlName="phone"
+        type="text"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('phone')?.touched && form.get('phone')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Valid phone number is required
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div>
+      <label
+        for="address"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Address
+      </label>
+      <input
+        id="address"
+        formControlName="address"
+        type="text"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('address')?.touched && form.get('address')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('address')?.touched && form.get('address')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Address is required
+      </div>
+    </div>
+
+    <!-- Date of Birth -->
+    <div>
+      <label
+        for="dateofbirth"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Date of Birth
+      </label>
+      <input
+        id="dateofbirth"
+        formControlName="dateofbirth"
+        type="date"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('dateofbirth')?.touched && form.get('dateofbirth')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('dateofbirth')?.touched && form.get('dateofbirth')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Date of birth is required
+      </div>
+    </div>
+
+    <!-- Admission No -->
+    <div>
+      <label
+        for="admission_no"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Admission No
+      </label>
+      <input
+        id="admission_no"
+        formControlName="admission_no"
+        type="text"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('admission_no')?.touched && form.get('admission_no')?.invalid
+        }"
+      />
+      <div
+        *ngIf="form.get('admission_no')?.touched && form.get('admission_no')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Admission number is required
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div>
+      <label
+        for="status"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Status
+      </label>
+      <select
+        id="status"
+        formControlName="status"
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+        aria-required="true"
+        [ngClass]="{
+          'border-red-500': form.get('status')?.touched && form.get('status')?.invalid
+        }"
+      >
+        <option value="" disabled>Select status</option>
+        <option
+          *ngFor="let status of teacherStatuses"
+          [value]="status"
+        >
+          {{ status }}
+        </option>
+      </select>
+      <div
+        *ngIf="form.get('status')?.touched && form.get('status')?.invalid"
+        class="text-red-500 text-sm mt-1"
+        role="alert"
+      >
+        Status is required
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex space-x-4 mt-8">
+      <button
+        type="submit"
+        [disabled]="isLoading"
+        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition-all duration-200 disabled:bg-blue-300 disabled:cursor-not-allowed"
+        aria-label="Save teacher"
+      >
+        {{ isLoading ? 'Saving...' : 'Save' }}
+      </button>
+      <button
+        type="button"
+        [disabled]="isLoading"
+        class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        [routerLink]="['/admin/teachers']"
+        aria-label="Cancel"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

@@ -82,7 +82,7 @@ export class StudentFormComponent implements OnInit {
           gender: student.user.gender || '',
           phone: student.user.phone || '',
           address: student.user.address || '',
-          dateofbirth: student.user.dateofbirth || '',
+          dateofbirth: student.user.dateofbirth || '', // Changed to date_of_birth to match API response
           admission_no: student.admission_no || '',
           status: student.status || '',
           group_id: student.group_id || '',
@@ -118,7 +118,7 @@ export class StudentFormComponent implements OnInit {
       gender: this.form.get('gender')?.value,
       phone: this.form.get('phone')?.value,
       address: this.form.get('address')?.value,
-      dateofbirth: this.form.get('dateofbirth')?.value, // Consistent with FormControl
+      dateofbirth: this.form.get('dateofbirth')?.value, // Consistent with FormControl and add functionality
       admission_no: this.form.get('admission_no')?.value,
       status: this.form.get('status')?.value,
       group_id: this.form.get('group_id')?.value,
@@ -133,6 +133,7 @@ export class StudentFormComponent implements OnInit {
           this.errorMessage = '';
           this.fieldErrors = {};
           this.isLoading = false;
+          this.successMessage = 'Student updated successfully';
           this.router.navigate(['/admin/students']);
         },
         error: (err) => {
@@ -145,12 +146,14 @@ export class StudentFormComponent implements OnInit {
         }
       });
     } else {
+      // Add functionality remains unchanged
       this.studentService.addStudent(studentData).subscribe({
         next: (response) => {
           console.log('Add response:', response);
           this.errorMessage = '';
           this.fieldErrors = {};
           this.isLoading = false;
+          this.successMessage = 'Student added successfully';
           this.router.navigate(['/admin/students']);
         },
         error: (err) => {

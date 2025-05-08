@@ -143,7 +143,7 @@
 
       <!-- Buttons -->
       <div class="flex space-x-4 mt-8">
-        <button type="submit" [disabled]="isLoading " class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:bg-blue-300">
+        <button type="submit" [disabled]="isLoading" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:bg-blue-300">
           {{ isLoading ? 'Saving...' : (isEditMode ? 'Update' : 'Add') }}
         </button>
         <button type="button" [disabled]="isLoading" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:bg-gray-300" (click)="cancel()">

@@ -118,7 +118,7 @@ export class StudentService {
 
   getStudentById(id: number): Observable<Student> {
     return this.http
-      .get<{ student: Student }>(`${this.apiUrl}/students/${id}`, { headers: this.getHeaders() })
+      .get<{ student: Student }>(`${this.apiUrl}/student/${id}`, { headers: this.getHeaders() })
       .pipe(
         map(response => response.student),
         catchError(error => this.handleError(error, `Failed to fetch student (ID: ${id})`))
@@ -137,7 +137,7 @@ export class StudentService {
   updateStudent(id: number, data: Partial<Student>): Observable<void> {
     console.log('Update student request data:', data);
     return this.http
-      .put<void>(`${this.apiUrl}/students/${id}`, data, { headers: this.getHeaders() })
+      .put<void>(`${this.apiUrl}/student/edit/${id}`, data, { headers: this.getHeaders() })
       .pipe(
         catchError(error => this.handleError(error, `Failed to update student (ID: ${id})`))
       );
