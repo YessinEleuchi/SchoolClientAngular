@@ -47,7 +47,7 @@ export class StudentFormComponent implements OnInit {
       gender: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required, Validators.maxLength(20)]),
       address: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-      date_of_birth: new FormControl('', [Validators.required]),
+      dateofbirth: new FormControl('', [Validators.required]),
       admission_no: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       status: new FormControl('', [Validators.required]),
       group_id: new FormControl('', [Validators.required]),
@@ -65,7 +65,7 @@ export class StudentFormComponent implements OnInit {
       next: (groups) => this.groups = groups,
       error: (err) => this.errorMessage = err.message || 'Failed to load groups'
     });
-    this.parentService.getAllParents().subscribe({
+    this.parentService.getAllParentsnp().subscribe({
       next: (parents) => this.parents = parents,
       error: (err) => this.errorMessage = err.message || 'Failed to load parents'
     });
@@ -82,7 +82,7 @@ export class StudentFormComponent implements OnInit {
           gender: student.user.gender || '',
           phone: student.user.phone || '',
           address: student.user.address || '',
-          date_of_birth: student.user.date_of_birth || '',
+          dateofbirth: student.user.dateofbirth || '',
           admission_no: student.admission_no || '',
           status: student.status || '',
           group_id: student.group_id || '',
@@ -118,13 +118,12 @@ export class StudentFormComponent implements OnInit {
       gender: this.form.get('gender')?.value,
       phone: this.form.get('phone')?.value,
       address: this.form.get('address')?.value,
-      dateofbirth: this.form.get('dateofbirth')?.value,
+      dateofbirth: this.form.get('dateofbirth')?.value, // Consistent with FormControl
       admission_no: this.form.get('admission_no')?.value,
       status: this.form.get('status')?.value,
       group_id: this.form.get('group_id')?.value,
       parent_id: this.form.get('parent_id')?.value || null
     };
-
     console.log('Student data to send:', studentData);
 
     if (id) {
@@ -166,7 +165,6 @@ export class StudentFormComponent implements OnInit {
     }
   }
 
-  // Add the cancel method
   cancel(): void {
     this.router.navigate(['/admin/students']);
   }

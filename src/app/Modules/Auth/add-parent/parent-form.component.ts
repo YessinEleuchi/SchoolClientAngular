@@ -67,7 +67,7 @@ export class ParentFormComponent implements OnInit {
           gender: parent.user.gender || '',
           phone: parent.user.phone || '',
           address: parent.user.address || '',
-          date_of_birth: parent.user.date_of_birth ||'',
+          date_of_birth: parent.user.dateofbirth ||'',
           admission_no: parent.admission_no || ''
         });
         console.log('Form after patching with parent data:', this.form.value);

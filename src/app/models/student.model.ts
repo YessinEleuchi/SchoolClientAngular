@@ -10,8 +10,6 @@ export interface Student {
   group_id?: number;
   parent_id?: number;
   status: StudentStatusEnums;
-
-  // Relations
   user?: User;
   group?: Group;
   parent?: Parent;

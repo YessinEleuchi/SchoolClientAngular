@@ -5,7 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { Student } from '../models/student.model';
-
+import {StudentsByCycleAndFieldResponse} from "../models/overview.model";
 
 
 @Injectable({
@@ -98,6 +98,14 @@ export class StudentService {
         catchError(error => this.handleError(error, `Failed to fetch total students for field (ID: ${fieldId})`))
       );
   }
+  getStudentsByCycleAndField(): Observable<StudentsByCycleAndFieldResponse> {
+    return this.http
+      .get<StudentsByCycleAndFieldResponse>(`${this.apiUrl}/students/bycycleandfield`, { headers: this.getHeaders() })
+      .pipe(
+        tap(response => console.log(response)), // Log the response
+        catchError(error => this.handleError(error, 'Failed to fetch students by cycle and field'))
+      );
+  }
 
   getTotalStudentsBySpecialization(specializationId: number): Observable<number> {
     return this.http
@@ -120,7 +128,7 @@ export class StudentService {
   addStudent(data: Partial<Student>): Observable<void> {
     console.log('Add student request data:', data);
     return this.http
-      .post<void>(`${this.apiUrl}/students`, data, { headers: this.getHeaders() })
+      .post<void>(`${this.apiUrl}/add-student`, data, { headers: this.getHeaders() })
       .pipe(
         catchError(error => this.handleError(error, 'Failed to add student'))
       );

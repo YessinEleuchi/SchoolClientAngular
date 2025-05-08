@@ -61,7 +61,7 @@ export class TeacherFormComponent implements OnInit {
           gender: teacher.user.gender || '',
           phone: teacher.user.phone || '',
           address: teacher.user.address || '',
-          dateofbirth: teacher.user.date_of_birth || '',
+          dateofbirth: teacher.user.dateofbirth || '',
           admission_no: teacher.admission_no || '',
           status: teacher.status || ''
         });

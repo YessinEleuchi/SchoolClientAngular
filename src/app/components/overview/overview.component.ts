@@ -5,6 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { StudentService } from '../../services/student.service';
 import { CycleService } from '../../services/cycle.service';
 import { TeacherService } from '../../services/teacher.service';
+import { StudentsByCycleAndFieldResponse, CycleData, FieldData } from '../../models/overview.model';
 
 Chart.register(...registerables);
 
@@ -17,11 +18,13 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   totalStudents = 0;
   totalTeachers = 0;
   cycles: { id: number; name: string; count: number }[] = [];
+  cycleFieldData: CycleData[] = [];
   loading = true;
   currentDate = new Date();
 
   pieChart: Chart<'pie', number[], string> | null = null;
   barChart: Chart<'bar', number[], string> | null = null;
+  cycleFieldPieCharts: Chart<'pie', number[], string>[] = [];
 
   private subscriptions: Subscription[] = [];
 
@@ -33,11 +36,11 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.fetchStudentData();
+    this.fetchCycleFieldData();
   }
 
   ngAfterViewInit(): void {
-    // Ensure charts are initialized after view is rendered
-    if (this.cycles.length > 0 && !this.pieChart && !this.barChart) {
+    if (this.cycles.length > 0 && !this.pieChart && !this.barChart && this.cycleFieldPieCharts.length === 0) {
       setTimeout(() => this.initCharts(), 100);
     }
   }
@@ -46,6 +49,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.pieChart) this.pieChart.destroy();
     if (this.barChart) this.barChart.destroy();
+    this.cycleFieldPieCharts.forEach(chart => chart.destroy());
   }
 
   fetchStudentData(): void {
@@ -88,9 +92,24 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(dataSub);
   }
 
+  fetchCycleFieldData(): void {
+    const sub = this.studentService.getStudentsByCycleAndField()
+      .subscribe(
+        response => {
+          if (response.success) {
+            this.cycleFieldData = response.data;
+            this.initCharts();
+          }
+        },
+        error => console.error('Error fetching cycle and field data:', error)
+      );
+    this.subscriptions.push(sub);
+  }
+
   initCharts(): void {
     this.createPieChart();
     this.createBarChart();
+    this.createCycleFieldPieCharts();
   }
 
   createPieChart(): void {
@@ -225,16 +244,95 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  createCycleFieldPieCharts(): void {
+    this.cycleFieldPieCharts.forEach(chart => chart.destroy());
+    this.cycleFieldPieCharts = [];
+
+    this.cycleFieldData.forEach((cycleData, index) => {
+      const ctx = document.getElementById(`cycleFieldPieChart${index}`) as HTMLCanvasElement;
+      if (!ctx) return;
+
+      const labels = cycleData.fields.map(f => f.field_name);
+      const data = cycleData.fields.map(f => f.student_count);
+
+      const chart = new Chart<'pie', number[], string>(ctx, {
+        type: 'pie',
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: this.generateColors(labels.length),
+            borderColor: '#ffffff',
+            borderWidth: 2,
+            hoverOffset: 20
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { size: 12 },
+                padding: 10,
+                color: '#1f2937'
+              }
+            },
+            title: {
+              display: true,
+              text: `Distribution des Étudiants - ${cycleData.cycle_name}`,
+              font: { size: 16, weight: 'bold' },
+              color: '#1f2937',
+              padding: { top: 10, bottom: 10 }
+            },
+            tooltip: {
+              backgroundColor: '#1f2937',
+              titleFont: { size: 14 },
+              bodyFont: { size: 12 },
+              padding: 10,
+              callbacks: {
+                label: context => {
+                  const value = context.raw as number;
+                  const label = context.label || '';
+                  const total = cycleData.fields.reduce((sum, f) => sum + f.student_count, 0);
+                  const percentage = total > 0 ? ((value / total) * 100).toFixed(1) + '%' : '0%';
+                  return `${label}: ${value} (${percentage})`;
+                }
+              }
+            }
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true,
+            duration: 1000,
+            easing: 'easeOutQuart'
+          }
+        }
+      });
+      this.cycleFieldPieCharts.push(chart);
+    });
+  }
+
   getPercentage(value: number): string {
     return this.totalStudents > 0
       ? ((value / this.totalStudents) * 100).toFixed(1) + '%'
       : '0%';
   }
 
+  getFieldPercentage(value: number, cycleName: string): string {
+    const cycle = this.cycles.find(c => c.name === cycleName);
+    const total = cycle ? cycle.count : 0;
+    return total > 0
+      ? ((value / total) * 100).toFixed(1) + '%'
+      : '0%';
+  }
+
   generateColors(count: number): string[] {
     const baseColors = [
       '#3b82f6', '#ef4444', '#14b8a6', '#facc15',
-      '#a78bfa', '#f472b6', '#34d399', '#f87171'
+      '#a78bfa', '#f472b6', '#34d399', '#f87171',
+      '#60a5fa', '#fb7185', '#2dd4bf', '#f4d03f'
     ];
     return Array.from({ length: count }, (_, i) => baseColors[i % baseColors.length]);
   }

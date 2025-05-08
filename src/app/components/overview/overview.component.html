@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <!-- Graduation Rate Card (placeholder - you can connect this to real data) -->
+    <!-- Graduation Rate Card -->
     <div class="bg-white rounded-2xl p-6 shadow card-hover relative overflow-hidden animate-fade-in">
       <div class="absolute top-0 right-0 w-24 h-24 -mt-6 -mr-6 rounded-full bg-yellow-100 opacity-50"></div>
       <div class="relative">
@@ -141,7 +141,6 @@
     <!-- Pie Chart -->
     <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-800">Distribution des Étudiants par Cycle</h3>
         <div class="flex space-x-2">
           <button class="text-gray-500 hover:text-gray-700">
             <i class="fas fa-expand-alt"></i>
@@ -159,7 +158,6 @@
     <!-- Bar Chart -->
     <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-800">Nombre d'Étudiants par Cycle</h3>
         <div class="flex space-x-2">
           <button class="text-gray-500 hover:text-gray-700">
             <i class="fas fa-expand-alt"></i>
@@ -171,6 +169,26 @@
       </div>
       <div class="relative h-80 sm:h-96">
         <canvas id="studentBarChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Cycle Field Pie Charts -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in col-span-1 lg:col-span-2">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Distribution des Étudiants par Cycle et Filière</h3>
+        <div class="flex space-x-2">
+          <button class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-expand-alt"></i>
+          </button>
+          <button class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div *ngFor="let cycleData of cycleFieldData; let i = index" class="relative h-64">
+          <canvas id="cycleFieldPieChart{{i}}"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -222,7 +240,7 @@
   </section>
 </div>
 
-<!-- Loading Skeleton (Displayed when loading) -->
+<!-- Loading Skeleton -->
 <div class="container mx-auto px-4 py-8" *ngIf="loading">
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-2xl p-6 shadow">
@@ -272,6 +290,16 @@
         </div>
       </div>
       <div class="h-80 skeleton rounded"></div>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <div class="flex justify-between mb-4">
+        <p class="skeleton w-48 h-6"></p>
+        <div class="flex gap-2">
+          <p class="skeleton w-6 h-6 rounded"></p>
+          <p class="skeleton w-6 h-6 rounded"></p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-64 skeleton rounded"></div>
     </div>
   </div>
 </div>

@@ -7,7 +7,7 @@ export interface User {
   profile_picture?: string;
   role:  RoleEnum
   gender?: 'male' | 'female' ;
-  date_of_birth?: string;
+  dateofbirth?: string;
   phone?: string;
   address?: string;
 }

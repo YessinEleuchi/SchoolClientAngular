@@ -71,6 +71,14 @@ export class ParentService {
         catchError(error => this.handleError(error, 'Failed to fetch parents'))
       );
   }
+  getAllParentsnp(): Observable<Parent[]> {
+    return this.http
+      .get<{ parents: Parent[] }>(`${this.apiUrl}/parentsnp`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.parents),
+        catchError(error => this.handleError(error, 'Failed to fetch parents'))
+      );
+  }
   addParent(data: Partial<Parent>): Observable<void> {
     console.log('Add parent request data:', data);
     return this.http
