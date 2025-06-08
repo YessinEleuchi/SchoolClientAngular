@@ -32,7 +32,7 @@ A modern and efficient School Management System built with Angular 16, featuring
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/SchoolClientA.git
+git clone https://github.com/yourusername/SchoolClientAngular.git
 cd SchoolClientA
 ```
 
